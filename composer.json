@@ -1,0 +1,66 @@
+{
+    "name": "mallardduck/dynamic-echo-events",
+    "description": "A library that allows registering laravel-echo events dynamically and done entirely in PHP.",
+    "keywords": [
+        "mallardduck",
+        "laravel",
+        "pusher",
+        "socket.io",
+        "laravel-echo",
+        "laravel-events",
+        "laravel-websockets"
+
+    ],
+    "homepage": "https://github.com/mallardduck/dynamic-echo-events",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "MallardDuck",
+            "email": "self@danpock.me",
+            "homepage": "https://danpock.me",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^7.4|^8.0",
+        "illuminate/contracts": "7.0|^8.0"
+    },
+    "require-dev": {
+        "psy/psysh": "@stable",
+        "mockery/mockery": "^1.3.1",
+        "phpunit/phpunit": "^8.4|^9.0",
+        "laravel/framework": "^7.0|^8.0",
+        "orchestra/testbench": "^5.0|^6.0",
+        "orchestra/testbench-dusk": "^5.2|^6.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "MallardDuck\\DynamicEcho\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "MallardDuck\\DynamicEcho\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit --colors=always",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "MallardDuck\\DynamicEcho\\DynamicEchoServiceProvider"
+            ],
+            "aliases": {
+                "DynamicEcho": "MallardDuck\\DynamicEcho\\DynamicEcho"
+            }
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
