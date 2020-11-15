@@ -8,11 +8,11 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Auth;
 use MallardDuck\DynamicEcho\Contracts\ImplementsDynamicEcho;
-use MallardDuck\DynamicEcho\Traits\DynamicEchoChannel;
+use MallardDuck\DynamicEcho\Traits\PrivateDynamicEchoChannel;
 
 class ConsoleLogEvent implements ShouldBroadcastNow, ImplementsDynamicEcho
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels, DynamicEchoChannel;
+    use Dispatchable, InteractsWithSockets, SerializesModels, PrivateDynamicEchoChannel;
 
     public int $userId;
 

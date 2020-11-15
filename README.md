@@ -3,7 +3,7 @@
 A helper library to dynamically generate the javascript to register Echo event listeners.
 
 Instead of manually writing JS code to register Echo event listeners, simply define the JS handler callback in the Event.
-Then add the `ImplementsDynamicEcho` contact and use the `DynamicEchoChannel` trait.
+Then add the `ImplementsDynamicEcho` contact and use the `PrivateDynamicEchoChannel` trait.
 
 ## Installation
 
@@ -41,7 +41,7 @@ Add in:
 ```
 
 Finally, when you want an event to automatically register itself in the browser use the Event contact and trait.
-This is done simply by adding the `ImplementsDynamicEcho` contact and use the `DynamicEchoChannel` trait to the event.
+This is done simply by adding the `ImplementsDynamicEcho` contact and use the `PrivateDynamicEchoChannel` trait to the event.
 
 Check the `examples` folder for working example(s) of how this is done.
 
