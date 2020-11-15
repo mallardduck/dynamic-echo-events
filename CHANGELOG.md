@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.0.2] - 2020-11-14
+### Added
+- New example for pushing log data to the user's browser console.
+
 ## [0.0.1] - 2020-11-14
 ### Added
 - Created initial repo.
