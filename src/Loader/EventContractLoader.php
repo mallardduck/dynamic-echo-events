@@ -11,19 +11,19 @@ class EventContractLoader
     /**
      * @var string
      */
-    private $baseNamespace;
+    private string $baseNamespace;
 
     /**
      * @var Collection
      */
     private Collection $appEvents;
 
-    public function __construct()
+    public function __construct(string $namespace)
     {
-        $this->baseNamespace = $baseNamespace = config('dynamic-echo.namespace', "App\\Events");
+        $this->baseNamespace = $namespace;
         $this->appEvents = collect(require(app()->basePath() . '/vendor/composer/autoload_classmap.php'))
-                                ->filter(static function ($val, $key) use ($baseNamespace) {
-                                    return str_starts_with($key, $baseNamespace);
+                                ->filter(static function ($val, $key) use ($namespace) {
+                                    return str_starts_with($key, $namespace);
                                 });
     }
 

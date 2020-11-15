@@ -2,9 +2,12 @@
 
 namespace MallardDuck\DynamicEcho;
 
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\ServiceProvider;
+use MallardDuck\DynamicEcho\Loader\EventContractLoader;
+use MallardDuck\DynamicEcho\ScriptGenerator\EchoScriptGenerator;
 
 class DynamicEchoServiceProvider extends ServiceProvider
 {
@@ -15,7 +18,7 @@ class DynamicEchoServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->registerDynamicEchoSingleton();
+        $this->registerProviders();
         $this->mergeConfigFrom(__DIR__ . '/../config/dynamic-echo.php', 'dynamic-echo');
     }
 
@@ -32,9 +35,26 @@ class DynamicEchoServiceProvider extends ServiceProvider
         $this->registerEchoChannels();
     }
 
-    protected function registerDynamicEchoSingleton(): void
+    protected function registerProviders(): void
     {
-        $this->app->singleton('dynamic-echo', DynamicEchoService::class);
+        $this->app->singleton(EventContractLoader::class, static function ($app) {
+            return new EventContractLoader(
+                $app->config->get('dynamic-echo.namespace', "App\\Events")
+            );
+        });
+
+        $this->app->singleton(EchoScriptGenerator::class, static function () {
+            return new EchoScriptGenerator();
+        });
+
+        $this->app->singleton(DynamicEchoService::class, static function ($app) {
+            return new DynamicEchoService(
+                $app->make(EventContractLoader::class),
+                $app->make(EchoScriptGenerator::class)
+            );
+        });
+
+        $this->app->alias(DynamicEchoService::class, 'dynamic-echo');
     }
 
     protected function registerConfigs(): void
