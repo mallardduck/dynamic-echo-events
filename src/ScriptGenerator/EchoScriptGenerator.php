@@ -3,7 +3,6 @@
 namespace MallardDuck\DynamicEcho\ScriptGenerator;
 
 use Illuminate\Support\Collection;
-use MallardDuck\DynamicEcho\ScriptGenerator\Nodes\RootEchoNode;
 use MallardDuck\DynamicEcho\ScriptGenerator\Nodes\ScriptNode;
 
 /**
@@ -20,7 +19,7 @@ class EchoScriptGenerator
     public function __construct()
     {
         $this->scriptNodeStack = new Collection([
-            new RootEchoNode(),
+            ScriptNodeBuilder::getRootEchoNode(),
         ]);
     }
 
@@ -36,6 +35,11 @@ class EchoScriptGenerator
         return $this;
     }
 
+    /**
+     * Outputs the entire generated Echo script code.
+     *
+     * @return string
+     */
     public function rootScript(): string
     {
         return $this->renderNodeStack($this->scriptNodeStack);

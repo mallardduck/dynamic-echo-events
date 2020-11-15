@@ -4,8 +4,7 @@ namespace MallardDuck\DynamicEcho;
 
 use MallardDuck\DynamicEcho\Loader\EventContractLoader;
 use MallardDuck\DynamicEcho\ScriptGenerator\EchoScriptGenerator;
-use MallardDuck\DynamicEcho\ScriptGenerator\Nodes\ListenNode;
-use MallardDuck\DynamicEcho\ScriptGenerator\Nodes\PrivateChannelNode;
+use MallardDuck\DynamicEcho\ScriptGenerator\ScriptNodeBuilder;
 
 class DynamicEchoService
 {
@@ -60,16 +59,17 @@ class DynamicEchoService
         $loaderItems = $this->loader->load();
 
         // TODO: Allow multiple channels.
-        $this->scriptGenerator->pushScriptNode(new PrivateChannelNode(
+        $this->scriptGenerator->pushScriptNode(ScriptNodeBuilder::getPrivateChannelNode(
             '`App.Models.User.${window.dynamicEcho.userID}`'
         ));
 
         foreach ($loaderItems as $item) {
-            $this->scriptGenerator->pushScriptNode(new ListenNode(
+            $this->scriptGenerator->pushScriptNode(ScriptNodeBuilder::getListenNode(
                 $item['event'],
                 $item['js-handler']
             ));
         }
+        // END TO DO
         $generatedScript = $this->scriptGenerator->rootScript();
 
         return view('dynamicEcho::scripts', compact('assetWarning', 'generatedScript'))->render();
