@@ -26,7 +26,7 @@ class EchoScriptGenerator
 
     public function rootContext(): string
     {
-        // TODO: figure out how to fetch the root context.
+        // TODO: figure out how to fetch/build the root context.
         return '';
     }
 
