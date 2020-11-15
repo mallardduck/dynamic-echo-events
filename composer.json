@@ -27,12 +27,15 @@
         "illuminate/contracts": "7.0|^8.0"
     },
     "require-dev": {
-        "psy/psysh": "@stable",
-        "mockery/mockery": "^1.3.1",
-        "phpunit/phpunit": "^8.4|^9.0",
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
         "laravel/framework": "^7.0|^8.0",
+        "mockery/mockery": "^1.3.1",
         "orchestra/testbench": "^5.0|^6.0",
-        "orchestra/testbench-dusk": "^5.2|^6.0"
+        "orchestra/testbench-dusk": "^5.2|^6.0",
+        "phpcompatibility/php-compatibility": "*",
+        "phpunit/phpunit": "^8.4|^9.0",
+        "psy/psysh": "@stable",
+        "squizlabs/php_codesniffer": "*"
     },
     "autoload": {
         "psr-4": {
@@ -46,7 +49,13 @@
     },
     "scripts": {
         "test": "vendor/bin/phpunit --colors=always",
-        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage",
+        "phpcs": "./vendor/bin/phpcs --standard=PSR12",
+        "phpcbf": "./vendor/bin/phpcbf --standard=PSR12",
+        "check-style": "@phpcs -p --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 src tests",
+        "fix-style": "@phpcbf -p --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 src tests",
+        "versions": "./vendor/bin/phpcs -p ./src/ ./tests/ --standard=PHPCompatibility --runtime-set testVersion 7.4",
+        "semver": "php-semver-checker-git suggest --allow-detached -vvv --details --include-before=src --include-after=src"
     },
     "config": {
         "sort-packages": true

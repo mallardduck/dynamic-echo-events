@@ -41,7 +41,7 @@ class DynamicEchoServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__.'/../config/dynamic-echo.php' => base_path('config/dynamic-echo.php'),
+                __DIR__ . '/../config/dynamic-echo.php' => base_path('config/dynamic-echo.php'),
             ], 'config');
         }
     }
@@ -55,7 +55,7 @@ class DynamicEchoServiceProvider extends ServiceProvider
         }
 
         $this->loadViewsFrom(
-            __DIR__.'/../resources/views',
+            __DIR__ . '/../resources/views',
             'dynamicEcho'
         );
     }

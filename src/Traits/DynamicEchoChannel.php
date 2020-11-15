@@ -4,7 +4,8 @@ namespace MallardDuck\DynamicEcho\Traits;
 
 use Illuminate\Broadcasting\PrivateChannel;
 
-trait DynamicEchoChannel {
+trait DynamicEchoChannel
+{
     /**
      * Get the channels the event should broadcast on.
      *
