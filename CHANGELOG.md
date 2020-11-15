@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.1.0] - 2020-11-14
+### Changed
+- Modified the trait name used for basic private user channel.
+
 ## [0.0.2] - 2020-11-14
 ### Added
 - New example for pushing log data to the user's browser console.
