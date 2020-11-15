@@ -62,6 +62,7 @@ class DynamicEchoServiceProvider extends ServiceProvider
 
     protected function registerBladeDirectives(): void
     {
+        // TODO: Split this up into two halves - one that's static and the same for every user, the other dynamic for each.
         Blade::directive('dynamicEcho', [DynamicEchoBladeDirectives::class, 'dynamicEchoScripts']);
     }
 

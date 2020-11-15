@@ -11,8 +11,10 @@ use Illuminate\Broadcasting\Channel;
  * @implements DynamicChannelFormula
  * @package MallardDuck\DynamicEcho\Channels
  */
-trait UsesDynamicChannelFormula
+trait UseDynamicChannelFormula
 {
+    public AbstractChannelParameters $dynamicChannel;
+
     /**
      * @example:
      *         'App.Models.Game.{gameID}.User.{userID}'
@@ -21,7 +23,7 @@ trait UsesDynamicChannelFormula
      */
     public function getChannelIdentifierFormula(): string
     {
-        throw new BadMethodCallException("Method must be implemented by base class.");
+        return $this->dynamicChannel->channelIdentifierFormula;
     }
 
     /**
@@ -82,7 +84,7 @@ trait UsesDynamicChannelFormula
      */
     public function getChannelType(): string
     {
-        throw new BadMethodCallException("Method must be implemented by base class.");
+        return $this->dynamicChannel->channelType;
     }
 
     /**
