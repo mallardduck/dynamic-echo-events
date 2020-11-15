@@ -32,11 +32,14 @@ class EventContractLoader
         $events = $this->appEvents;
         $baseNamespace = $this->baseNamespace;
 
-        $collection = new Collection();
+        // TODO: Make this collection unique to this use-case; i.e. require that it conform to a specific data shape.
+        $collection = new ChannelAwareEventCollection();
 
         $events->each(static function ($val, $key) use ($collection, $baseNamespace) {
             $implements = class_implements($key);
             if (array_key_exists(ImplementsDynamicEcho::class, $implements)) {
+                // TODO: Make this loader aware of what channel these go to.
+                // TODO: Create a DTO for these probably.
                 $collection->push([
                     'event' => str_replace($baseNamespace . '\\', '', $key),
                     'js-handler' => $key::getEventJSCallback()
