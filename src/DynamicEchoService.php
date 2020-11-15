@@ -17,11 +17,37 @@ class DynamicEchoService
         $this->loader = new EventContractLoader();
     }
 
+    public function context(): string
+    {
+        $debug = config('app.debug');
+
+        $context = $this->compiledJSContext();
+
+        $html = [];
+
+        if ($debug) {
+            $html[] = '<!-- Start DynamicEcho context -->';
+        }
+        $html[] = $debug ? $context : $this->minify($context);
+        if ($debug) {
+            $html[] = '<!-- End DynamicEcho context -->';
+        }
+
+        return implode("\n", $html);
+    }
+
+    protected function compiledJSContext(): string
+    {
+        $assetWarning = null;
+
+        return view('dynamicEcho::context')->render();
+    }
+
     public function scripts(): string
     {
         $debug = config('app.debug');
 
-        $scripts = $this->compiledJSAssets();
+        $scripts = $this->compiledJSScripts();
 
         $html = [];
 
@@ -36,7 +62,7 @@ class DynamicEchoService
         return implode("\n", $html);
     }
 
-    protected function compiledJSAssets(): string
+    protected function compiledJSScripts(): string
     {
         $assetWarning = null;
         $loaderItems = $this->loader->load();

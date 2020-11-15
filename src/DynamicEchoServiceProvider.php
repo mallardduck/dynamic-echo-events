@@ -62,7 +62,8 @@ class DynamicEchoServiceProvider extends ServiceProvider
 
     protected function registerBladeDirectives(): void
     {
-        Blade::directive('dynamicEcho', [DynamicEchoBladeDirectives::class, 'dynamicEchoScripts']);
+        Blade::directive('dynamicEchoContext', [DynamicEchoBladeDirectives::class, 'dynamicEchoContext']);
+        Blade::directive('dynamicEchoScripts', [DynamicEchoBladeDirectives::class, 'dynamicEchoScripts']);
     }
 
     protected function registerEchoChannels(): void
