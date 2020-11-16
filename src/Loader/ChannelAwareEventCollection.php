@@ -7,14 +7,22 @@ use Illuminate\Support\Collection;
 /**
  * @example This is an example shape of how this collection should store data.
  *
- * [
- *   "App.Models.User.1" => [
- *     "ToastEvent" => MallardDuck\DynamicEcho\Loader\LoadedEventDTO
- *   ],
- *   "App.Game.1.User.1" => [
- *     "SomeEvent" => MallardDuck\DynamicEcho\Loader\LoadedEventDTO,
- *     "SomeEvent2" => MallardDuck\DynamicEcho\Loader\LoadedEventDTO,
- *   ]
+ * items: [
+ *   "App.Models.User.{userId}" => ChannelEventCollection {
+ *     channel: "App.Models.User.{userId}",
+ *     channelAuthCallback: someCallbackMethod,
+ *     items: [
+ *       "ToastEvent" => MallardDuck\DynamicEcho\Loader\LoadedEventDTO
+ *     ]
+ *   },
+ *   "App.Models.Game.{gameId}.User.{userId}" => ChannelEventCollection {
+ *     channel: "App.Models.Game.{gameId}.User.{userId}",
+ *     channelAuthCallback: someCallbackMethod,
+ *     items: [
+ *       "SomeEvent" => MallardDuck\DynamicEcho\Loader\LoadedEventDTO,
+ *       "SomeEvent2" => MallardDuck\DynamicEcho\Loader\LoadedEventDTO,
+ *     ]
+ *   }
  * ]
  */
 class ChannelAwareEventCollection extends Collection
@@ -23,21 +31,9 @@ class ChannelAwareEventCollection extends Collection
     /**
      * The items contained in the collection.
      *
-     * @var array
+     * @var ChannelEventCollection[]
      */
     protected $items = [];
-    // TODO: something about making this specific to ChannelEventCollection
-
-    /**
-     * Create a new collection.
-     *
-     * @param  mixed  $items
-     * @return void
-     */
-    public function __construct($items = [])
-    {
-        $this->items = $this->getArrayableItems($items);
-    }
 
     /**
      * Push one or more items onto the end of the collection.
@@ -50,6 +46,12 @@ class ChannelAwareEventCollection extends Collection
         // TODO: Update push to use ChannelEventCollection somehow.
         foreach ($values as $value) {
             $identifier = $value->getParameter('channelIdentifierFormula');
+            // TODO: Use identifier to check if ChannelEventCollection with that name exists.
+            // TODO: Fetch or create new ChannelEventCollection - then push event into that.
+            dd(
+                $identifier,
+                $this->items
+            );
             $this->items[$identifier][$value->eventName] = $value;
         }
 

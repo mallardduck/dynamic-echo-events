@@ -8,9 +8,6 @@ class LoadedEventDTO
 {
     public string $eventName;
     public string $fullEventName;
-    public string $channel;
-    public string $jsChannelIdentifier;
-    public string $jsCallback;
 
     /**
      * @var AbstractChannelParameters

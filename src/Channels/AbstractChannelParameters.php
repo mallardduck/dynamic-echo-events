@@ -6,8 +6,6 @@ abstract class AbstractChannelParameters
 {
     public string $channelType;
 
-    public ?array $channelBindingOptions;
-
     public string $channelIdentifierFormula;
 
     public string $channelJsIdentifier;
