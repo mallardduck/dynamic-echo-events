@@ -1,6 +1,6 @@
 <?php
 
-namespace MallardDuck\DynamicEcho\Channels;
+namespace MallardDuck\DynamicEcho\Contracts;
 
 use BadMethodCallException;
 use Illuminate\Broadcasting\Channel;

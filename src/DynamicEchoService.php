@@ -70,7 +70,13 @@ class DynamicEchoService
             '`App.Models.User.${window.dynamicEchoOld.userID}`'
         ));
 
-        foreach ($loaderItems as $item) {
+        foreach ($loaderItems as $key => $item) {
+
+            dd(
+                $key,
+                $item,
+            );
+
             $this->scriptGenerator->pushScriptNode(ScriptNodeBuilder::getListenNode(
                 $item->eventName,
                 $item->jsCallback

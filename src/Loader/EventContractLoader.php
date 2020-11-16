@@ -4,8 +4,10 @@ namespace MallardDuck\DynamicEcho\Loader;
 
 use Illuminate\Support\Collection;
 use MallardDuck\DynamicEcho\ChannelManager;
-use MallardDuck\DynamicEcho\Channels\HasDynamicChannelFormula;
+use MallardDuck\DynamicEcho\Contracts\HasDynamicChannelFormula;
 
+// TODO: Consider splitting channel loading into new loader class.
+// TODO: Or, make this class good at loading channels and events - then renaming it.
 class EventContractLoader
 {
 
@@ -18,11 +20,6 @@ class EventContractLoader
      * @var Collection
      */
     private Collection $appEvents;
-
-    /**
-     * @var Collection
-     */
-    private Collection $appEventChannels;
 
     /**
      * @var ChannelManager
@@ -43,7 +40,8 @@ class EventContractLoader
     {
         $events = $this->appEvents;
         $baseNamespace = $this->baseNamespace;
-        // TODO: Actually use channel manager for the events we find.
+
+        // TODO: Make the channel manager actually manage the channels fully.
         $channelManager = $this->channelManager;
 
         $events->each(static function ($val, $key) use ($channelManager, $baseNamespace) {
@@ -51,14 +49,10 @@ class EventContractLoader
             if (array_key_exists(HasDynamicChannelFormula::class, $implements)) {
                 $eventName = str_replace($baseNamespace . '\\', '', $key);
                 $channelParameterClass = $key::getChannelParametersClassname();
-                $channelParameterClass = new $channelParameterClass();
-                // TODO: Make this loader aware of what channel these go to.
                 $channelManager->pushEventDto(LoadedEventDTO::new(
                     $eventName,
                     $key,
-                    $channelParameterClass->channelIdentifierFormula,
-                    $channelParameterClass->channelIdentifierFormula,
-                    $channelParameterClass->channelJsEventCallback,
+                    new $channelParameterClass()
                 ));
             }
         });

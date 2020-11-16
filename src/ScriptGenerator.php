@@ -40,11 +40,7 @@ class ScriptGenerator
         $baseContext->active = false;
         $baseContext->channelStack = $this->contextNodeStack->toJson();
 
-        try {
-            return json_encode($baseContext, JSON_THROW_ON_ERROR);
-        } catch (\JsonException $e) {
-            return "{}";
-        }
+        return json_encode($baseContext, JSON_THROW_ON_ERROR);
     }
 
     public function pushScriptNode(ScriptNode $node): self

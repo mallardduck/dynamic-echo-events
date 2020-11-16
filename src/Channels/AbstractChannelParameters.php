@@ -10,6 +10,23 @@ abstract class AbstractChannelParameters
 
     public string $channelIdentifierFormula;
 
+    public string $channelJsIdentifier;
+
+    /**
+     * AbstractChannelParameters constructor.
+     *
+     * @note Must be called by implementing class.
+     */
+    public function __construct()
+    {
+        $this->channelJsIdentifier = $this->getJSChannelIdentifier();
+    }
+
+    public function getJSChannelIdentifier(): string
+    {
+        return str_replace('{', '${', $this->channelIdentifierFormula);
+    }
+
     /**
      * @var callable
      */
@@ -19,14 +36,4 @@ abstract class AbstractChannelParameters
      * @var callable
      */
     public $channelAuthCallback;
-
-    /**
-     * @var null|string
-     */
-    public ?string $channelJsEventCallback;
-
-    public function getJsEventCallback(): string
-    {
-        return $this->channelJsEventCallback ?? '';
-    }
 }

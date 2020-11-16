@@ -24,9 +24,13 @@ class ChannelManager
         $this->usedChannels = new ChannelAwareEventCollection();
     }
 
+    public function registeredChannelNames(): array
+    {
+        return $this->usedChannels->keys()->toArray();
+    }
+
     public function registeredChannels(): array
     {
-        // TODO: actually do something that gets the list of channels
         return $this->usedChannels->toArray();
     }
 
