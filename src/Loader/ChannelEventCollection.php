@@ -2,7 +2,9 @@
 
 namespace MallardDuck\DynamicEcho\Loader;
 
+use Closure;
 use Illuminate\Support\Collection;
+use MallardDuck\DynamicEcho\Channels\AbstractChannelParameters;
 
 /**
  * @example This is an example shape of how this collection should store data.
@@ -38,34 +40,18 @@ class ChannelEventCollection extends Collection
      */
     private $channelJsVarKey;
 
-    /**
-     * @var callable
-     * @example
-     *     function ($user, $userId) {
-     *         return (int) $user->id === (int) $userId;
-     *     }
-     */
-    private $channelAuthCallback;
-
-    /**
-     * @var null|array
-     */
-    private ?array $channelAuthOptions = null;
-
     private string $channelJsIdentifier;
+
+    private AbstractChannelParameters $channelParameters;
 
     public static function new(
         string $channelIdentifier,
-        callable $channelAuthCallback,
-        array $channelAuthOptions,
-        string $channelJsIdentifier
+        AbstractChannelParameters $channelParameters
     ): self {
         $collection = new self();
         $collection
             ->setChannelIdentifier($channelIdentifier)
-            ->setChannelAuthCallback($channelAuthCallback)
-            ->setChannelAuthOptions($channelAuthOptions)
-            ->setChannelJsIdentifier($channelJsIdentifier);
+            ->setChannelParameters($channelParameters);
 
         return $collection;
     }
@@ -83,6 +69,18 @@ class ChannelEventCollection extends Collection
     }
 
     /**
+     * @param AbstractChannelParameters $channelParameters
+     *
+     * @return $this
+     */
+    private function setChannelParameters(AbstractChannelParameters $channelParameters): self
+    {
+        $this->channelParameters = $channelParameters;
+
+        return $this;
+    }
+
+    /**
      * Get the channel identifier for this ChannelEventCollection.
      *
      * @return string
@@ -92,15 +90,9 @@ class ChannelEventCollection extends Collection
         return $this->channelAuthName;
     }
 
-    /**
-     * @param callable $channelAuthCallback
-     *
-     * @return $this
-     */
-    private function setChannelAuthCallback(callable $channelAuthCallback): self
+    public function getChannelJsVarKey(): string
     {
-        $this->channelAuthCallback = $channelAuthCallback;
-        return $this;
+        return $this->channelJsVarKey;
     }
 
     /**
@@ -110,20 +102,7 @@ class ChannelEventCollection extends Collection
      */
     public function getChannelAuthCallback(): callable
     {
-        return $this->channelAuthCallback;
-    }
-
-    /**
-     * @param array $channelAuthOptions
-     *
-     * @return $this
-     */
-    private function setChannelAuthOptions(array $channelAuthOptions): self
-    {
-        if (!empty($channelAuthOptions)) {
-            $this->channelAuthOptions = $channelAuthOptions;
-        }
-        return $this;
+        return $this->channelParameters->channelAuthCallback;
     }
 
     /**
@@ -133,7 +112,18 @@ class ChannelEventCollection extends Collection
      */
     public function getChannelAuthOptions(): ?array
     {
-        return $this->channelAuthOptions;
+        if (0 !== count($this->channelParameters->channelAuthOptions)) {
+            return $this->channelParameters->channelAuthOptions;
+        }
+        return null;
+    }
+
+    /**
+     * @return callable|Closure|string
+     */
+    public function getChannelContextBindingCallback()
+    {
+        return $this->channelParameters->channelContextBindingCallback;
     }
 
     /**
@@ -147,14 +137,6 @@ class ChannelEventCollection extends Collection
      */
     public function getChannelJsIdentifier(): string
     {
-        return $this->channelJsIdentifier;
+        return $this->channelParameters->channelJsIdentifier;
     }
-
-    private function setChannelJsIdentifier(string $channelJsIdentifier): self
-    {
-        $this->channelJsIdentifier = $channelJsIdentifier;
-
-        return $this;
-    }
-
 }

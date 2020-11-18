@@ -50,23 +50,19 @@ class DynamicEchoService
     {
         $warning = null;
 
-
-        /**
-         * @var ChannelManager $channelManager
-         */
-        $channelManager = $this->channelManager;
+        // TODO: Figure out what a "GenericContextNode" might look like, so I can push the "active: false" variable in.
 
         /**
          * @var ChannelEventCollection $channelGroup
          */
-        foreach ($channelManager->getChannelEventCollection() as $channelName => $channelGroup) {
-            // TODO: Figure out how I'll really push the context nodes.
-            // TODO: Does the creation of the contextNodes -here- push data *somewhere* that the scriptNodes depend on?
-            $this->scriptGenerator->pushContextNode(ScriptNodeBuilder::getRootContextNode(
-                "context shit"
+        foreach ($this->channelManager->getChannelEventCollection() as $channelName => $channelGroup) {
+            $channelContext = $this->resolveChannelContextBindings($channelGroup->getChannelContextBindingCallback());
+
+            $this->scriptGenerator->pushContextNode(ScriptNodeBuilder::getChannelContextNode(
+                $channelGroup->getChannelJsVarKey(),
+                $channelContext
             ));
         }
-
 
 
         $generatedContext = $this->scriptGenerator->getRootContext();
@@ -74,6 +70,13 @@ class DynamicEchoService
         return view('dynamicEcho::context', compact('warning', 'generatedContext'))->render();
     }
 
+    private function resolveChannelContextBindings($callback): array
+    {
+        return $callback(request());
+    }
+
+    // NOTE: Ideally the static content could be "compiled" more consistently to a cache.
+    // CONT: Then the dynamic ones would just be injected to the page for each user's request.
     public function scripts(): string
     {
         $debug = config('app.debug');

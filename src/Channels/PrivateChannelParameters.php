@@ -2,6 +2,7 @@
 
 namespace MallardDuck\DynamicEcho\Channels;
 
+use Illuminate\Http\Request;
 use MallardDuck\DynamicEcho\Contracts\HasDynamicChannelFormula;
 
 /**
@@ -9,7 +10,7 @@ use MallardDuck\DynamicEcho\Contracts\HasDynamicChannelFormula;
  *
  * @mixin AbstractChannelParameters
  */
-class PrivateChannelParameters extends AbstractChannelParameters
+final class PrivateChannelParameters extends AbstractChannelParameters
 {
     public function __construct()
     {
@@ -17,6 +18,11 @@ class PrivateChannelParameters extends AbstractChannelParameters
         $this->channelAuthName = 'App.Models.User.{userId}';
         $this->channelAuthCallback = static function ($user, $userId) {
             return (int) $user->id === (int) $userId;
+        };
+        $this->channelContextBindingCallback = static function (Request $request) {
+            return [
+                'userId' => $request->user()->id
+            ];
         };
         $this->eventChannelIdentifierBindingCallback = static function (HasDynamicChannelFormula $event) {
             $self = $event;

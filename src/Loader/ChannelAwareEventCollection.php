@@ -49,9 +49,7 @@ class ChannelAwareEventCollection extends Collection
             if (!$this->has($identifier)) {
                 $channelEventCollection = ChannelEventCollection::new(
                     $identifier,
-                    $value->getParameter('channelAuthCallback'),
-                    $value->getParameter('channelAuthOptions'),
-                    $value->getParameter('channelJsIdentifier')
+                    $value->getChannelParameters()
                 );
             } else {
                 $channelEventCollection = $this->get($identifier);

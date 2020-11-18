@@ -3,6 +3,7 @@
 namespace MallardDuck\DynamicEcho;
 
 use Illuminate\Support\Collection;
+use MallardDuck\DynamicEcho\ScriptGenerator\ContextNodeCollection;
 use MallardDuck\DynamicEcho\ScriptGenerator\Nodes\ContextNode;
 use MallardDuck\DynamicEcho\ScriptGenerator\Nodes\ScriptNode;
 use MallardDuck\DynamicEcho\ScriptGenerator\ScriptNodeBuilder;
@@ -16,12 +17,12 @@ use MallardDuck\DynamicEcho\ScriptGenerator\ScriptNodeBuilder;
  */
 class ScriptGenerator
 {
-    private Collection $contextNodeStack;
+    private ContextNodeCollection $contextNodeStack;
     private Collection $scriptNodeStack;
 
     public function __construct()
     {
-        $this->contextNodeStack = new Collection();
+        $this->contextNodeStack = new ContextNodeCollection();
 
         $this->scriptNodeStack = new Collection([
             ScriptNodeBuilder::getRootEchoNode(),
@@ -36,12 +37,7 @@ class ScriptGenerator
 
     public function getRootContext(): string
     {
-        // TODO: figure out how to fetch/build the root context.
-        $baseContext = new \stdClass();
-        $baseContext->active = false;
-        $baseContext->channelStack = $this->contextNodeStack->toJson();
-
-        return json_encode($baseContext, JSON_THROW_ON_ERROR);
+        return $this->contextNodeStack->toJson();
     }
 
     public function pushScriptNode(ScriptNode $node): self

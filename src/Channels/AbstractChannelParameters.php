@@ -2,6 +2,8 @@
 
 namespace MallardDuck\DynamicEcho\Channels;
 
+use Closure;
+
 abstract class AbstractChannelParameters
 {
     /**
@@ -43,6 +45,11 @@ abstract class AbstractChannelParameters
     public array $channelAuthOptions = [];
 
     /**
+     * @var callable|Closure|string
+     */
+    public $channelContextBindingCallback;
+
+    /**
      * This callable that will resolve the channel name bindings for the event.
      *
      * The callback will be passed the event it's related to and have access to the public properties and methods.
@@ -62,7 +69,10 @@ abstract class AbstractChannelParameters
      */
     public string $channelJsIdentifier;
 
-    private static $parametersInstances = [];
+    /**
+     * @var array Singleton instances array.
+     */
+    private static array $parametersInstances = [];
 
     /**
      * AbstractChannelParameters constructor.

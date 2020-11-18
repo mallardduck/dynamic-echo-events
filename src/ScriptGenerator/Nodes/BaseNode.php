@@ -8,7 +8,12 @@ abstract class BaseNode
 {
     public function __toString()
     {
-        throw new BadMethodCallException("Method must be implemented by base class.");
-        return static::class;
+        throw new BadMethodCallException(
+            sprintf(
+                "Method [%s] must be implemented by concrete class [%s]",
+                __FUNCTION__,
+                static::class
+            )
+        );
     }
 }
