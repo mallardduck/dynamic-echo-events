@@ -1,3 +1,8 @@
+# CAUTION
+For real, until this caution warning is gone expect that this will eat your cat.  
+This is a rapidly evolving project at this time and until it reaches V1 it likely won't feel stable enough to use in production.
+---
+
 # Dynamic Echo Events
 
 A helper library to dynamically generate the javascript to register Echo event listeners.
