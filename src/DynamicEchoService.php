@@ -99,15 +99,11 @@ class DynamicEchoService
     protected function compiledJSScripts(): string
     {
         $warning = null;
-        /**
-         * @var ChannelManager $channelManager
-         */
-        $channelManager = $this->channelManager;
 
         /**
          * @var ChannelEventCollection $channelGroup
          */
-        foreach ($channelManager->getChannelEventCollection() as $channelName => $channelGroup) {
+        foreach ($this->channelManager->getChannelEventCollection() as $channelName => $channelGroup) {
             // Push the channel subscription in first...
             $this->scriptGenerator->pushScriptNode(ScriptNodeBuilder::getPrivateChannelNode(
                 $channelGroup->getChannelJsIdentifier()
