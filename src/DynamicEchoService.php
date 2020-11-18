@@ -51,7 +51,6 @@ class DynamicEchoService
         $warning = null;
 
         // TODO: Figure out what a "GenericContextNode" might look like, so I can push the "active: false" variable in.
-
         /**
          * @var ChannelEventCollection $channelGroup
          */
@@ -98,8 +97,6 @@ class DynamicEchoService
      */
     protected function compiledJSScripts(): string
     {
-        $warning = null;
-
         /**
          * @var ChannelEventCollection $channelGroup
          */
@@ -123,7 +120,7 @@ class DynamicEchoService
 
         $generatedScript = $this->scriptGenerator->getRootScript();
 
-        return view('dynamicEcho::scripts', compact('warning', 'generatedScript'))->render();
+        return view('dynamicEcho::scripts', compact('generatedScript'))->render();
     }
 
     protected function buildHtmlStack(string $content, string $renderType): array
