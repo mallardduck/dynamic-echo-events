@@ -33,6 +33,12 @@ class ChannelEventCollection extends Collection
     private string $channelAuthName;
 
     /**
+     * An md5 of the $channelAuthName - used for setting JS context vars.
+     * @var string
+     */
+    private $channelJsVarKey;
+
+    /**
      * @var callable
      * @example
      *     function ($user, $userId) {
@@ -60,6 +66,7 @@ class ChannelEventCollection extends Collection
             ->setChannelAuthCallback($channelAuthCallback)
             ->setChannelAuthOptions($channelAuthOptions)
             ->setChannelJsIdentifier($channelJsIdentifier);
+
         return $collection;
     }
 
@@ -71,6 +78,7 @@ class ChannelEventCollection extends Collection
     private function setChannelIdentifier(string $channelIdentifier): self
     {
         $this->channelAuthName = $channelIdentifier;
+        $this->channelJsVarKey = md5($channelIdentifier);
         return $this;
     }
 
