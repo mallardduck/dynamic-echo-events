@@ -2,25 +2,28 @@
 
 namespace MallardDuck\DynamicEcho;
 
+use MallardDuck\DynamicEcho\Loader\ChannelEventCollection;
 use MallardDuck\DynamicEcho\Loader\EventContractLoader;
-use MallardDuck\DynamicEcho\ScriptGenerator\EchoScriptGenerator;
+use MallardDuck\DynamicEcho\Loader\LoadedEventDTO;
 use MallardDuck\DynamicEcho\ScriptGenerator\ScriptNodeBuilder;
 
 class DynamicEchoService
 {
     /**
-     * @var EventContractLoader
+     * @var ChannelManager
      */
-    private EventContractLoader $loader;
+    private ChannelManager $channelManager;
 
     /**
-     * @var EchoScriptGenerator
+     * @var ScriptGenerator
      */
-    private EchoScriptGenerator $scriptGenerator;
+    private ScriptGenerator $scriptGenerator;
 
-    public function __construct(EventContractLoader $loader, EchoScriptGenerator $scriptGenerator)
-    {
-        $this->loader = $loader;
+    public function __construct(
+        ChannelManager $channelManager,
+        ScriptGenerator $scriptGenerator
+    ) {
+        $this->channelManager = $channelManager;
         $this->scriptGenerator = $scriptGenerator;
     }
 
@@ -35,13 +38,45 @@ class DynamicEchoService
         return implode("\n", $html);
     }
 
+    /**
+     * Internally compile the necessary JS context for the current Request/User.
+     *
+     * This method calls on the ChannelManager to fetch channels and events that need to be registered.
+     * Then it pushes the equivalent ScriptNodes into the generator and creates the JS listeners.
+     *
+     * @return string
+     */
     protected function compiledJSContext(): string
     {
-        $assetWarning = null;
+        $warning = null;
 
-        return view('dynamicEcho::context', compact('assetWarning'))->render();
+        // TODO: Figure out what a "GenericContextNode" might look like, so I can push the "active: false" variable in.
+
+        /**
+         * @var ChannelEventCollection $channelGroup
+         */
+        foreach ($this->channelManager->getChannelEventCollection() as $channelName => $channelGroup) {
+            $channelContext = $this->resolveChannelContextBindings($channelGroup->getChannelContextBindingCallback());
+
+            $this->scriptGenerator->pushContextNode(ScriptNodeBuilder::getChannelContextNode(
+                $channelGroup->getChannelJsVarKey(),
+                $channelContext
+            ));
+        }
+
+
+        $generatedContext = $this->scriptGenerator->getRootContext();
+
+        return view('dynamicEcho::context', compact('warning', 'generatedContext'))->render();
     }
 
+    private function resolveChannelContextBindings($callback): array
+    {
+        return $callback(request());
+    }
+
+    // NOTE: Ideally the static content could be "compiled" more consistently to a cache.
+    // CONT: Then the dynamic ones would just be injected to the page for each user's request.
     public function scripts(): string
     {
         $debug = config('app.debug');
@@ -53,26 +88,42 @@ class DynamicEchoService
         return implode("\n", $html);
     }
 
+    /**
+     * Internally compile the necessary JS code to subscribe to channels and events.
+     *
+     * This method calls on the ChannelManager to fetch channels and events that need to be registered.
+     * Then it pushes the equivalent ScriptNodes into the generator and creates the JS listeners.
+     *
+     * @return string
+     */
     protected function compiledJSScripts(): string
     {
-        $assetWarning = null;
-        $loaderItems = $this->loader->load();
+        $warning = null;
 
-        // TODO: Allow multiple channels.
-        $this->scriptGenerator->pushScriptNode(ScriptNodeBuilder::getPrivateChannelNode(
-            '`App.Models.User.${window.dynamicEcho.userID}`'
-        ));
-
-        foreach ($loaderItems as $item) {
-            $this->scriptGenerator->pushScriptNode(ScriptNodeBuilder::getListenNode(
-                $item['event'],
-                $item['js-handler']
+        /**
+         * @var ChannelEventCollection $channelGroup
+         */
+        foreach ($this->channelManager->getChannelEventCollection() as $channelName => $channelGroup) {
+            // Push the channel subscription in first...
+            $this->scriptGenerator->pushScriptNode(ScriptNodeBuilder::getPrivateChannelNode(
+                $channelGroup->getChannelJsIdentifier()
             ));
-        }
-        // END TO DO
-        $generatedScript = $this->scriptGenerator->rootScript();
 
-        return view('dynamicEcho::scripts', compact('assetWarning', 'generatedScript'))->render();
+            /**
+             * @var LoadedEventDTO $eventDTO
+             */
+            foreach ($channelGroup as $key => $eventDTO) {
+                // Then push each of the channels events into the stack too.
+                $this->scriptGenerator->pushScriptNode(ScriptNodeBuilder::getListenNode(
+                    $eventDTO->eventName,
+                    $eventDTO->jsEventCallback
+                ));
+            }
+        }
+
+        $generatedScript = $this->scriptGenerator->getRootScript();
+
+        return view('dynamicEcho::scripts', compact('warning', 'generatedScript'))->render();
     }
 
     protected function buildHtmlStack(string $content, string $renderType): array
@@ -100,5 +151,10 @@ class DynamicEchoService
     protected function minify(string $subject): string
     {
         return preg_replace('~(\v|\t|\s{2,})~m', '', $subject);
+    }
+
+    public function getUsedChannels(): array
+    {
+        return $this->channelManager->registeredChannels();
     }
 }

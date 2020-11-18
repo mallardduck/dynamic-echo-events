@@ -2,12 +2,19 @@
 
 namespace MallardDuck\DynamicEcho\ScriptGenerator;
 
+use MallardDuck\DynamicEcho\ScriptGenerator\Nodes\ChannelContextNode;
 use MallardDuck\DynamicEcho\ScriptGenerator\Nodes\ListenNode;
 use MallardDuck\DynamicEcho\ScriptGenerator\Nodes\PrivateChannelNode;
+use MallardDuck\DynamicEcho\ScriptGenerator\NOdes\RootContextNode;
 use MallardDuck\DynamicEcho\ScriptGenerator\Nodes\RootEchoNode;
 
 class ScriptNodeBuilder
 {
+    public static function getRootContextNode(...$args): RootContextNode
+    {
+        return new RootContextNode($args);
+    }
+
     /**
      * @return RootEchoNode
      */
@@ -40,5 +47,10 @@ class ScriptNodeBuilder
     public static function getListenNode(string $eventName, string $callback): ListenNode
     {
         return new ListenNode($eventName, $callback);
+    }
+
+    public static function getChannelContextNode(string $getChannelJsVarKey, array $channelContext)
+    {
+        return new ChannelContextNode($getChannelJsVarKey, $channelContext);
     }
 }

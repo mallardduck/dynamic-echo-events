@@ -3,10 +3,12 @@
 namespace MallardDuck\DynamicEcho\ScriptGenerator\Nodes;
 
 use BadMethodCallException;
+use JsonSerializable;
 
-abstract class BaseNode
+class ContextNode extends BaseNode implements JsonSerializable
 {
-    public function __toString()
+
+    public function jsonSerialize()
     {
         throw new BadMethodCallException(
             sprintf(

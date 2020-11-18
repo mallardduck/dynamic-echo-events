@@ -6,8 +6,8 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\ServiceProvider;
+use MallardDuck\DynamicEcho\Loader\ChannelEventCollection;
 use MallardDuck\DynamicEcho\Loader\EventContractLoader;
-use MallardDuck\DynamicEcho\ScriptGenerator\EchoScriptGenerator;
 
 class DynamicEchoServiceProvider extends ServiceProvider
 {
@@ -37,24 +37,30 @@ class DynamicEchoServiceProvider extends ServiceProvider
 
     protected function registerProviders(): void
     {
+        $this->app->singleton(ChannelManager::class, static function () {
+            return new ChannelManager();
+        });
+
         $this->app->singleton(EventContractLoader::class, static function ($app) {
             return new EventContractLoader(
+                $app->make(ChannelManager::class),
                 $app->config->get('dynamic-echo.namespace', "App\\Events")
             );
         });
 
-        $this->app->singleton(EchoScriptGenerator::class, static function () {
-            return new EchoScriptGenerator();
+        $this->app->singleton(ScriptGenerator::class, static function () {
+            return new ScriptGenerator();
         });
 
         $this->app->singleton(DynamicEchoService::class, static function ($app) {
             return new DynamicEchoService(
-                $app->make(EventContractLoader::class),
-                $app->make(EchoScriptGenerator::class)
+                $app->make(ChannelManager::class),
+                $app->make(ScriptGenerator::class),
             );
         });
 
         $this->app->alias(DynamicEchoService::class, 'dynamic-echo');
+        $this->app->alias(ChannelManager::class, 'dynamic-echo::channel-manager');
     }
 
     protected function registerConfigs(): void
@@ -88,8 +94,22 @@ class DynamicEchoServiceProvider extends ServiceProvider
 
     protected function registerEchoChannels(): void
     {
-        Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
-            return (int) $user->id === (int) $id;
-        });
+        /**
+         * @var EventContractLoader $loader
+         */
+        $eventContractLoader = $this->app->make(EventContractLoader::class);
+
+        /**
+         * @var ChannelEventCollection $channels
+         */
+        $channels = $eventContractLoader->load();
+        // TODO: Consider if the contract loading needs to happen at a different phase in the lifecycle.
+
+        /**
+         * @var ChannelEventCollection $channelGroup
+         */
+        foreach ($channels as $channelName => $channelGroup) {
+            Broadcast::channel($channelGroup->getChannelAuthName(), $channelGroup->getChannelAuthCallback());
+        }
     }
 }

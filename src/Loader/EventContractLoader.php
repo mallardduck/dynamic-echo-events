@@ -3,51 +3,56 @@
 namespace MallardDuck\DynamicEcho\Loader;
 
 use Illuminate\Support\Collection;
-use MallardDuck\DynamicEcho\Contracts\ImplementsDynamicEcho;
+use Illuminate\Support\Str;
+use MallardDuck\DynamicEcho\ChannelManager;
+use MallardDuck\DynamicEcho\Channels\AbstractChannelParameters;
+use MallardDuck\DynamicEcho\Contracts\HasDynamicChannelFormula;
 
+// TODO: Make this class good at loading channels and events - then rename it properly.
 class EventContractLoader
 {
-
-    /**
-     * @var string
-     */
-    private string $baseNamespace;
-
     /**
      * @var Collection
      */
     private Collection $appEvents;
 
-    public function __construct(string $namespace)
+    /**
+     * @var ChannelManager
+     */
+    private ChannelManager $channelManager;
+
+    public function __construct(ChannelManager $channelManager, string $namespace)
     {
-        $this->baseNamespace = $namespace;
+        $this->channelManager = $channelManager;
         $this->appEvents = collect(require(app()->basePath() . '/vendor/composer/autoload_classmap.php'))
                                 ->filter(static function ($val, $key) use ($namespace) {
                                     return str_starts_with($key, $namespace);
                                 });
     }
 
-    public function load(): array
+    public function load(): ChannelAwareEventCollection
     {
         $events = $this->appEvents;
-        $baseNamespace = $this->baseNamespace;
+        $channelManager = $this->channelManager;
 
-        // TODO: Make this collection unique to this use-case; i.e. require that it conform to a specific data shape.
-        $collection = new ChannelAwareEventCollection();
-
-        $events->each(static function ($val, $key) use ($collection, $baseNamespace) {
+        $events->filter(static function ($val, $key) {
             $implements = class_implements($key);
-            if (array_key_exists(ImplementsDynamicEcho::class, $implements)) {
-                // TODO: Make this loader aware of what channel these go to.
-                // TODO: Create a DTO for these probably.
-                $collection->push([
-                    'event' => str_replace($baseNamespace . '\\', '', $key),
-                    'js-handler' => $key::getEventJSCallback()
-                ]);
+            if (array_key_exists(HasDynamicChannelFormula::class, $implements)) {
+                return true;
             }
+            return false;
+        })->each(static function ($val, $key) use ($channelManager) {
+            /** @var AbstractChannelParameters $channelParameterClass */
+            $channelParameterClass = $key::getChannelParametersClassname();
+            $channelManager->pushEventDto(LoadedEventDTO::new(
+                (string) Str::of($key)->afterLast("\\"),
+                $key,
+                $key::getEventJSCallback(),
+                $channelParameterClass::getInstance()
+            ));
         });
         gc_mem_caches();
 
-        return $collection->toArray();
+        return $this->channelManager->getChannelEventCollection();
     }
 }

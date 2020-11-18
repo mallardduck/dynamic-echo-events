@@ -1,32 +1,43 @@
 <?php
 
-namespace MallardDuck\DynamicEcho\ScriptGenerator;
+namespace MallardDuck\DynamicEcho;
 
 use Illuminate\Support\Collection;
+use MallardDuck\DynamicEcho\ScriptGenerator\ContextNodeCollection;
+use MallardDuck\DynamicEcho\ScriptGenerator\Nodes\ContextNode;
 use MallardDuck\DynamicEcho\ScriptGenerator\Nodes\ScriptNode;
+use MallardDuck\DynamicEcho\ScriptGenerator\ScriptNodeBuilder;
 
 /**
- * Class EchoScriptGenerator
+ * Class ScriptGenerator
  *
  * Generates the Echo javascript for both the context and event scripts.
  *
  * @package MallardDuck\DynamicEcho
  */
-class EchoScriptGenerator
+class ScriptGenerator
 {
+    private ContextNodeCollection $contextNodeStack;
     private Collection $scriptNodeStack;
 
     public function __construct()
     {
+        $this->contextNodeStack = new ContextNodeCollection();
+
         $this->scriptNodeStack = new Collection([
             ScriptNodeBuilder::getRootEchoNode(),
         ]);
     }
 
-    public function rootContext(): string
+    public function pushContextNode(ContextNode $node): self
     {
-        // TODO: figure out how to fetch/build the root context.
-        return '';
+        $this->contextNodeStack->push($node);
+        return $this;
+    }
+
+    public function getRootContext(): string
+    {
+        return $this->contextNodeStack->toJson();
     }
 
     public function pushScriptNode(ScriptNode $node): self
@@ -40,7 +51,7 @@ class EchoScriptGenerator
      *
      * @return string
      */
-    public function rootScript(): string
+    public function getRootScript(): string
     {
         return $this->renderNodeStack($this->scriptNodeStack);
     }
