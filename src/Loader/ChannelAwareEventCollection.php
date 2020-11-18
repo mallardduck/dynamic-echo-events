@@ -43,7 +43,6 @@ class ChannelAwareEventCollection extends Collection
      */
     public function push(...$values)
     {
-        // TODO: Update push to use ChannelEventCollection somehow.
         foreach ($values as $key => $value) {
             $identifier = $value->getParameter('channelAuthName');
 
@@ -51,7 +50,8 @@ class ChannelAwareEventCollection extends Collection
                 $channelEventCollection = ChannelEventCollection::new(
                     $identifier,
                     $value->getParameter('channelAuthCallback'),
-                    $value->getParameter('channelAuthOptions')
+                    $value->getParameter('channelAuthOptions'),
+                    $value->getParameter('channelJsIdentifier')
                 );
             } else {
                 $channelEventCollection = $this->get($identifier);

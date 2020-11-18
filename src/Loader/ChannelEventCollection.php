@@ -30,7 +30,7 @@ class ChannelEventCollection extends Collection
      * @var string
      * @example "App.Models.User.{userId}"
      */
-    private string $channelIdentifier;
+    private string $channelAuthName;
 
     /**
      * @var callable
@@ -46,16 +46,20 @@ class ChannelEventCollection extends Collection
      */
     private ?array $channelAuthOptions = null;
 
+    private string $channelJsIdentifier;
+
     public static function new(
         string $channelIdentifier,
         callable $channelAuthCallback,
-        array $channelAuthOptions
+        array $channelAuthOptions,
+        string $channelJsIdentifier
     ): self {
         $collection = new self();
         $collection
             ->setChannelIdentifier($channelIdentifier)
             ->setChannelAuthCallback($channelAuthCallback)
-            ->setChannelAuthOptions($channelAuthOptions);
+            ->setChannelAuthOptions($channelAuthOptions)
+            ->setChannelJsIdentifier($channelJsIdentifier);
         return $collection;
     }
 
@@ -66,7 +70,7 @@ class ChannelEventCollection extends Collection
      */
     private function setChannelIdentifier(string $channelIdentifier): self
     {
-        $this->channelIdentifier = $channelIdentifier;
+        $this->channelAuthName = $channelIdentifier;
         return $this;
     }
 
@@ -75,9 +79,9 @@ class ChannelEventCollection extends Collection
      *
      * @return string
      */
-    public function getChannelIdentifier(): string
+    public function getChannelAuthName(): string
     {
-        return $this->channelIdentifier;
+        return $this->channelAuthName;
     }
 
     /**
@@ -122,6 +126,27 @@ class ChannelEventCollection extends Collection
     public function getChannelAuthOptions(): ?array
     {
         return $this->channelAuthOptions;
+    }
+
+    /**
+     * Get the string that identifies the echo channel in Javascript.
+     *
+     * This will return a JS "Template literal" string.
+     * It should allow for the specific user's channel's to be dynamically resolved.
+     *
+     * @return string
+     * @example '`App.Models.User.${window.dynamicEchoOld.userID}`'
+     */
+    public function getChannelJsIdentifier(): string
+    {
+        return $this->channelJsIdentifier;
+    }
+
+    private function setChannelJsIdentifier(string $channelJsIdentifier): self
+    {
+        $this->channelJsIdentifier = $channelJsIdentifier;
+
+        return $this;
     }
 
 }

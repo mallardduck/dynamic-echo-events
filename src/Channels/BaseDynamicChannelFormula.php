@@ -95,7 +95,7 @@ trait BaseDynamicChannelFormula
     public function getChannelIdentifierBindings(): array
     {
         $selfEvent = $this;
-        $callback = self::getChannelParametersClass()->channelIdentifierBindingCallback;
+        $callback = self::getChannelParametersClass()->eventChannelIdentifierBindingCallback;
 
         return $callback($selfEvent);
     }

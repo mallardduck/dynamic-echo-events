@@ -43,14 +43,14 @@ abstract class AbstractChannelParameters
     public array $channelAuthOptions = [];
 
     /**
-     * This callable that will resolve the channel name bindings.
+     * This callable that will resolve the channel name bindings for the event.
      *
      * The callback will be passed the event it's related to and have access to the public properties and methods.
      * Using those from the event, how would the dynamic bindings be resolved to the specific requests' values.
      *
      * @var callable
      */
-    public $channelIdentifierBindingCallback;
+    public $eventChannelIdentifierBindingCallback;
 
     /**
      * A representation of the $channelAuthName intended for the browser context.
@@ -86,6 +86,12 @@ abstract class AbstractChannelParameters
 
     public function getJSChannelIdentifier(): string
     {
-        return str_replace('{', '${', $this->channelAuthName);
+        // TODO: Maybe make this configurable?
+        $baseJsVarScope = "window.dynamicEcho";
+        $baseJsVar = sprintf("%s['%s'].", $baseJsVarScope, md5($this->channelAuthName));
+        // Replace the Laravel braces with JS braces and variable roots.
+        $jsRouteTemplate = str_replace('{', '${'.$baseJsVar, $this->channelAuthName);
+        // Wrap the string in backticks/graves for JS template literals.
+        return "`$jsRouteTemplate`";
     }
 }

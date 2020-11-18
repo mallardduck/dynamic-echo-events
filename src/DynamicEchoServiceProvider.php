@@ -109,7 +109,7 @@ class DynamicEchoServiceProvider extends ServiceProvider
          * @var ChannelEventCollection $channelGroup
          */
         foreach ($channels as $channelName => $channelGroup) {
-            Broadcast::channel($channelGroup->getChannelIdentifier(), $channelGroup->getChannelAuthCallback());
+            Broadcast::channel($channelGroup->getChannelAuthName(), $channelGroup->getChannelAuthCallback());
         }
     }
 }

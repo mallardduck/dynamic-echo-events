@@ -3,6 +3,7 @@
 namespace MallardDuck\DynamicEcho;
 
 use Illuminate\Support\Collection;
+use MallardDuck\DynamicEcho\ScriptGenerator\Nodes\ContextNode;
 use MallardDuck\DynamicEcho\ScriptGenerator\Nodes\ScriptNode;
 use MallardDuck\DynamicEcho\ScriptGenerator\ScriptNodeBuilder;
 
@@ -33,7 +34,7 @@ class ScriptGenerator
         return $this;
     }
 
-    public function rootContext(): string
+    public function getRootContext(): string
     {
         // TODO: figure out how to fetch/build the root context.
         $baseContext = new \stdClass();
@@ -54,7 +55,7 @@ class ScriptGenerator
      *
      * @return string
      */
-    public function rootScript(): string
+    public function getRootScript(): string
     {
         return $this->renderNodeStack($this->scriptNodeStack);
     }

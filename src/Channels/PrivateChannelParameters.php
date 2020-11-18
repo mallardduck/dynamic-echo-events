@@ -18,7 +18,7 @@ class PrivateChannelParameters extends AbstractChannelParameters
         $this->channelAuthCallback = static function ($user, $userId) {
             return (int) $user->id === (int) $userId;
         };
-        $this->channelIdentifierBindingCallback = static function (HasDynamicChannelFormula $event) {
+        $this->eventChannelIdentifierBindingCallback = static function (HasDynamicChannelFormula $event) {
             $self = $event;
             return [
                 'userId' => $self->userId,

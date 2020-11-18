@@ -9,9 +9,9 @@ use MallardDuck\DynamicEcho\ScriptGenerator\Nodes\RootEchoNode;
 
 class ScriptNodeBuilder
 {
-    public static function getRootContextNode(): RootContextNode
+    public static function getRootContextNode(...$args): RootContextNode
     {
-        return new RootContextNode();
+        return new RootContextNode($args);
     }
 
     /**
