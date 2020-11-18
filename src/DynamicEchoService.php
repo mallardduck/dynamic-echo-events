@@ -2,16 +2,13 @@
 
 namespace MallardDuck\DynamicEcho;
 
+use MallardDuck\DynamicEcho\Loader\ChannelEventCollection;
 use MallardDuck\DynamicEcho\Loader\EventContractLoader;
+use MallardDuck\DynamicEcho\Loader\LoadedEventDTO;
 use MallardDuck\DynamicEcho\ScriptGenerator\ScriptNodeBuilder;
 
 class DynamicEchoService
 {
-    /**
-     * @var EventContractLoader
-     */
-    private EventContractLoader $loader;
-
     /**
      * @var ChannelManager
      */
@@ -22,11 +19,11 @@ class DynamicEchoService
      */
     private ScriptGenerator $scriptGenerator;
 
-    public function __construct(EventContractLoader $loader, ScriptGenerator $scriptGenerator)
-    {
-        $this->loader = $loader;
-        $this->channelManager = new ChannelManager();
-        $this->loader->setChannelManager($this->channelManager);
+    public function __construct(
+        ChannelManager $channelManager,
+        ScriptGenerator $scriptGenerator
+    ) {
+        $this->channelManager = $channelManager;
         $this->scriptGenerator = $scriptGenerator;
     }
 
@@ -63,24 +60,27 @@ class DynamicEchoService
     protected function compiledJSScripts(): string
     {
         $warning = null;
-        $loaderItems = $this->loader->load();
+        $channelManager = $this->channelManager;
 
         // TODO: Allow multiple channels.
         $this->scriptGenerator->pushScriptNode(ScriptNodeBuilder::getPrivateChannelNode(
             '`App.Models.User.${window.dynamicEchoOld.userID}`'
         ));
 
-        foreach ($loaderItems as $key => $item) {
+        /**
+         * @var ChannelEventCollection $channelGroup
+         */
+        foreach ($channelManager->getChannelEventCollection() as $channelName => $channelGroup) {
 
-            dd(
-                $key,
-                $item,
-            );
-
-            $this->scriptGenerator->pushScriptNode(ScriptNodeBuilder::getListenNode(
-                $item->eventName,
-                $item->jsCallback
-            ));
+            /**
+             * @var LoadedEventDTO $eventDTO
+             */
+            foreach ($channelGroup as $key => $eventDTO) {
+                $this->scriptGenerator->pushScriptNode(ScriptNodeBuilder::getListenNode(
+                    $eventDTO->eventName,
+                    $eventDTO->jsEventCallback
+                ));
+            }
         }
         // END TO DO
 
@@ -120,5 +120,4 @@ class DynamicEchoService
     {
         return $this->channelManager->registeredChannels();
     }
-
 }

@@ -3,19 +3,14 @@
 namespace MallardDuck\DynamicEcho\Loader;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use MallardDuck\DynamicEcho\ChannelManager;
+use MallardDuck\DynamicEcho\Channels\AbstractChannelParameters;
 use MallardDuck\DynamicEcho\Contracts\HasDynamicChannelFormula;
 
-// TODO: Consider splitting channel loading into new loader class.
-// TODO: Or, make this class good at loading channels and events - then renaming it.
+// TODO: Make this class good at loading channels and events - then rename it properly.
 class EventContractLoader
 {
-
-    /**
-     * @var string
-     */
-    private string $baseNamespace;
-
     /**
      * @var Collection
      */
@@ -26,9 +21,8 @@ class EventContractLoader
      */
     private ChannelManager $channelManager;
 
-    public function __construct(string $namespace, ChannelManager $channelManager)
+    public function __construct(ChannelManager $channelManager, string $namespace)
     {
-        $this->baseNamespace = $namespace;
         $this->channelManager = $channelManager;
         $this->appEvents = collect(require(app()->basePath() . '/vendor/composer/autoload_classmap.php'))
                                 ->filter(static function ($val, $key) use ($namespace) {
@@ -36,28 +30,29 @@ class EventContractLoader
                                 });
     }
 
-    public function load(): array
+    public function load(): ChannelAwareEventCollection
     {
         $events = $this->appEvents;
-        $baseNamespace = $this->baseNamespace;
-
-        // TODO: Make the channel manager actually manage the channels fully.
         $channelManager = $this->channelManager;
 
-        $events->each(static function ($val, $key) use ($channelManager, $baseNamespace) {
+        $events->filter(static function ($val, $key) {
             $implements = class_implements($key);
             if (array_key_exists(HasDynamicChannelFormula::class, $implements)) {
-                $eventName = str_replace($baseNamespace . '\\', '', $key);
-                $channelParameterClass = $key::getChannelParametersClassname();
-                $channelManager->pushEventDto(LoadedEventDTO::new(
-                    $eventName,
-                    $key,
-                    new $channelParameterClass()
-                ));
+                return true;
             }
+            return false;
+        })->each(static function ($val, $key) use ($channelManager) {
+            /** @var AbstractChannelParameters $channelParameterClass */
+            $channelParameterClass = $key::getChannelParametersClassname();
+            $channelManager->pushEventDto(LoadedEventDTO::new(
+                (string) Str::of($key)->afterLast("\\"),
+                $key,
+                $key::getEventJSCallback(),
+                $channelParameterClass::getInstance()
+            ));
         });
         gc_mem_caches();
 
-        return $this->channelManager->registeredChannels();
+        return $this->channelManager->getChannelEventCollection();
     }
 }

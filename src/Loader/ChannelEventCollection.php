@@ -35,16 +35,27 @@ class ChannelEventCollection extends Collection
     /**
      * @var callable
      * @example
-     *     function ($user, $id) {
-     *         return (int) $user->id === (int) $id;
+     *     function ($user, $userId) {
+     *         return (int) $user->id === (int) $userId;
      *     }
      */
     private $channelAuthCallback;
 
-    public static function new(string $channelIdentifer, callable $channelAuthCallback): self
-    {
+    /**
+     * @var null|array
+     */
+    private ?array $channelAuthOptions = null;
+
+    public static function new(
+        string $channelIdentifier,
+        callable $channelAuthCallback,
+        array $channelAuthOptions
+    ): self {
         $collection = new self();
-        $collection->setChannelIdentifier($channelIdentifer)->setChannelAuthCallback($channelAuthCallback);
+        $collection
+            ->setChannelIdentifier($channelIdentifier)
+            ->setChannelAuthCallback($channelAuthCallback)
+            ->setChannelAuthOptions($channelAuthOptions);
         return $collection;
     }
 
@@ -88,6 +99,29 @@ class ChannelEventCollection extends Collection
     public function getChannelAuthCallback(): callable
     {
         return $this->channelAuthCallback;
+    }
+
+    /**
+     * @param array $channelAuthOptions
+     *
+     * @return $this
+     */
+    private function setChannelAuthOptions(array $channelAuthOptions): self
+    {
+        if (!empty($channelAuthOptions)) {
+            $this->channelAuthOptions = $channelAuthOptions;
+        }
+        return $this;
+    }
+
+    /**
+     * Get the channels authentication callback to verify user access.
+     *
+     * @return null|array
+     */
+    public function getChannelAuthOptions(): ?array
+    {
+        return $this->channelAuthOptions;
     }
 
 }

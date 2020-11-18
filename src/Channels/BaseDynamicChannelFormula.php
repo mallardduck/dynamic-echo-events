@@ -2,7 +2,6 @@
 
 namespace MallardDuck\DynamicEcho\Channels;
 
-use App\Events\Channels\ToastChannel;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Support\Str;
 use RuntimeException;
@@ -15,11 +14,20 @@ use RuntimeException;
  */
 trait BaseDynamicChannelFormula
 {
-    public static ?AbstractChannelParameters $dynamicChannel = null;
+    protected static ?AbstractChannelParameters $dynamicChannel = null;
 
     public static function getChannelParametersClassname(): string
     {
         throw new \BadMethodCallException("This method should be redefined by the base class.");
+    }
+
+    private static function getChannelParametersClass(): AbstractChannelParameters
+    {
+        if (null === self::$dynamicChannel) {
+            self::$dynamicChannel = self::getChannelParametersClassname()::getInstance();
+        }
+
+        return self::$dynamicChannel;
     }
 
     /**
@@ -28,9 +36,9 @@ trait BaseDynamicChannelFormula
      *
      * @return string
      */
-    public static function getChannelIdentifierFormula(): string
+    public static function getChannelAuthName(): string
     {
-        return self::$dynamicChannel->channelIdentifierFormula;
+        return self::getChannelParametersClass()->channelAuthName;
     }
 
     /**
@@ -43,7 +51,7 @@ trait BaseDynamicChannelFormula
     public function getChannelIdentifier(): string
     {
         $bindings = $this->getChannelIdentifierBindings();
-        $identifierFormula = self::getChannelIdentifierFormula();
+        $identifierFormula = self::getChannelAuthName();
 
 
         foreach ($bindings as $binding => $value) {
@@ -72,7 +80,7 @@ trait BaseDynamicChannelFormula
      */
     public static function getJSChannelIdentifier(): string
     {
-        return str_replace('{', '${', self::getChannelIdentifierFormula());
+        return str_replace('{', '${', self::getChannelAuthName());
     }
 
     /**
@@ -87,7 +95,7 @@ trait BaseDynamicChannelFormula
     public function getChannelIdentifierBindings(): array
     {
         $selfEvent = $this;
-        $callback = self::$dynamicChannel->channelIdentifierBindingCallback;
+        $callback = self::getChannelParametersClass()->channelIdentifierBindingCallback;
 
         return $callback($selfEvent);
     }
@@ -103,7 +111,7 @@ trait BaseDynamicChannelFormula
      */
     public function getChannelType(): string
     {
-        return self::$dynamicChannel->channelType;
+        return self::getChannelParametersClass()->channelType;
     }
 
     /**

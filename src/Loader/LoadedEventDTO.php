@@ -8,6 +8,7 @@ class LoadedEventDTO
 {
     public string $eventName;
     public string $fullEventName;
+    public string $jsEventCallback;
 
     /**
      * @var AbstractChannelParameters
@@ -17,6 +18,7 @@ class LoadedEventDTO
     /**
      * @param string                    $eventName
      * @param string                    $fullEventName
+     * @param string                    $jsEventCallback
      * @param AbstractChannelParameters $channelParameters
      *
      * @return LoadedEventDTO
@@ -24,23 +26,29 @@ class LoadedEventDTO
     public static function new(
         string $eventName,
         string $fullEventName,
+        string $jsEventCallback,
         AbstractChannelParameters $channelParameters
     ): LoadedEventDTO {
-        return new self($eventName, $fullEventName, $channelParameters);
+        return new self($eventName, $fullEventName, $jsEventCallback, $channelParameters);
     }
 
     /**
      * LoadedEventDTO constructor.
      *
-     * @param string $eventName
-     * @param string $channel
-     * @param string $jsChannelIdentifier
-     * @param string $jsCallback
+     * @param string                    $eventName
+     * @param string                    $fullEventName
+     * @param string                    $jsEventCallback
+     * @param AbstractChannelParameters $channelParameters
      */
-    public function __construct(string $eventName, string $fullEventName, AbstractChannelParameters $channelParameters)
-    {
+    public function __construct(
+        string $eventName,
+        string $fullEventName,
+        string $jsEventCallback,
+        AbstractChannelParameters $channelParameters
+    ) {
         $this->eventName = $eventName;
         $this->fullEventName = $fullEventName;
+        $this->jsEventCallback = $jsEventCallback;
         $this->channelParameters = $channelParameters;
     }
 

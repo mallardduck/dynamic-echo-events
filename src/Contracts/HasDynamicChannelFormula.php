@@ -33,7 +33,7 @@ interface HasDynamicChannelFormula
      * @return string
      * @throws BadMethodCallException
      */
-    public static function getChannelIdentifierFormula(): string;
+    public static function getChannelAuthName(): string;
 
     /**
      * @example:

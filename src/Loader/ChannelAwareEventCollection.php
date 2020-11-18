@@ -31,7 +31,7 @@ class ChannelAwareEventCollection extends Collection
     /**
      * The items contained in the collection.
      *
-     * @var ChannelEventCollection[]
+     * @var ChannelEventCollection[] $items
      */
     protected $items = [];
 
@@ -44,15 +44,20 @@ class ChannelAwareEventCollection extends Collection
     public function push(...$values)
     {
         // TODO: Update push to use ChannelEventCollection somehow.
-        foreach ($values as $value) {
-            $identifier = $value->getParameter('channelIdentifierFormula');
-            // TODO: Use identifier to check if ChannelEventCollection with that name exists.
-            // TODO: Fetch or create new ChannelEventCollection - then push event into that.
-            dd(
-                $identifier,
-                $this->items
-            );
-            $this->items[$identifier][$value->eventName] = $value;
+        foreach ($values as $key => $value) {
+            $identifier = $value->getParameter('channelAuthName');
+
+            if (!$this->has($identifier)) {
+                $channelEventCollection = ChannelEventCollection::new(
+                    $identifier,
+                    $value->getParameter('channelAuthCallback'),
+                    $value->getParameter('channelAuthOptions')
+                );
+            } else {
+                $channelEventCollection = $this->get($identifier);
+            }
+            $channelEventCollection = $channelEventCollection->push($value);
+            $this->items[$identifier] = $channelEventCollection;
         }
 
         return $this;
@@ -60,15 +65,17 @@ class ChannelAwareEventCollection extends Collection
 
     public function pop()
     {
-        throw new \BadMethodCallException("This method should not be called anymore; use the alternative popChannel or popChannelEvent methods.");
+        throw new \BadMethodCallException(
+            "This method should not be called use an alternatives; either popChannel or popChannelEvent."
+        );
     }
 
     /**
      * Get and remove the last item from the collection.
      *
-     * @return mixed
+     * @return ChannelEventCollection|null
      */
-    public function popChannel()
+    public function popChannel(): ?ChannelEventCollection
     {
         return array_pop($this->items);
     }
@@ -76,16 +83,18 @@ class ChannelAwareEventCollection extends Collection
     /**
      * Get and remove the last item from the collection.
      *
-     * @param string $key
+     * Just like normal array_pop, if the array is empty it will return null.
      *
-     * @return mixed
+     * @param string $channelName The name of the Channel that we're popping an event from.
+     *
+     * @return LoadedEventDTO|null
      */
-    public function popChannelEvent(string $key)
+    public function popChannelEvent(string $channelName): ?LoadedEventDTO
     {
-        if (array_key_exists($key, $this->items)) {
-            return array_pop($this->items[$key]);
+        if (array_key_exists($channelName, $this->items)) {
+            return $this->items[$channelName]->pop();
         }
 
-        return array_pop($this->items[$channelName]);
+        return null;
     }
 }

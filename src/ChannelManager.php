@@ -16,26 +16,47 @@ class ChannelManager
     /**
      * @var ChannelAwareEventCollection
      */
-    private ChannelAwareEventCollection $usedChannels;
+    private ChannelAwareEventCollection $channelCollection;
 
     public function __construct()
     {
         // TODO: Make this collection unique to this use-case; i.e. require that it conform to a specific data shape.
-        $this->usedChannels = new ChannelAwareEventCollection();
+        $this->channelCollection = new ChannelAwareEventCollection();
     }
 
     public function registeredChannelNames(): array
     {
-        return $this->usedChannels->keys()->toArray();
+        return $this->channelCollection->keys()->toArray();
     }
 
-    public function registeredChannels(): array
+    public function getChannelEventCollection(): ChannelAwareEventCollection
     {
-        return $this->usedChannels->toArray();
+        return $this->channelCollection;
     }
 
-    public function pushEventDto(LoadedEventDTO $newItem)
+    /**
+     * @param LoadedEventDTO $newItem
+     *
+     * @return $this
+     */
+    public function pushEventDto(LoadedEventDTO $newItem): self
     {
-        $this->usedChannels->push($newItem);
+        $this->channelCollection = $this->channelCollection->push($newItem);
+
+        return $this;
+    }
+
+    /**
+     * Push multiple EventDTOs into the channel collection.
+     *
+     * @param LoadedEventDTO|LoadedEventDTO[] $newItems,...
+     *
+     * @return $this
+     */
+    public function pushEventDtos(...$newItems): self
+    {
+        $this->channelCollection = $this->channelCollection->push(...$newItems);
+
+        return $this;
     }
 }
