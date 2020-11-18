@@ -1,4 +1,4 @@
-{{ $assetWarning }}
+{{ $warning }}
 <script type="text/javascript">
     {{-- TODO: Consider an even more extremem bode that compiles ALL of th is into a cached .js file. --}}
     if (window.dynamicEcho.active) {

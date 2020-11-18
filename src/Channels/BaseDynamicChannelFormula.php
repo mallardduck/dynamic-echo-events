@@ -2,18 +2,25 @@
 
 namespace MallardDuck\DynamicEcho\Channels;
 
-use BadMethodCallException;
+use App\Events\Channels\ToastChannel;
 use Illuminate\Broadcasting\Channel;
+use Illuminate\Support\Str;
+use RuntimeException;
 
 /**
  * Trait UsesDynamicChannelFormula
  *
- * @implements DynamicChannelFormula
+ * @implements HasDynamicChannelFormula
  * @package MallardDuck\DynamicEcho\Channels
  */
-trait UseDynamicChannelFormula
+trait BaseDynamicChannelFormula
 {
-    public AbstractChannelParameters $dynamicChannel;
+    public static ?AbstractChannelParameters $dynamicChannel = null;
+
+    public static function getChannelParametersClassname(): string
+    {
+        throw new \BadMethodCallException("This method should be redefined by the base class.");
+    }
 
     /**
      * @example:
@@ -21,9 +28,9 @@ trait UseDynamicChannelFormula
      *
      * @return string
      */
-    public function getChannelIdentifierFormula(): string
+    public static function getChannelIdentifierFormula(): string
     {
-        return $this->dynamicChannel->channelIdentifierFormula;
+        return self::$dynamicChannel->channelIdentifierFormula;
     }
 
     /**
@@ -31,14 +38,23 @@ trait UseDynamicChannelFormula
      *         'App.Models.Game.42.User.1'
      *
      * @return string
+     * @throws RuntimeException
      */
     public function getChannelIdentifier(): string
     {
         $bindings = $this->getChannelIdentifierBindings();
-        $identifierFormula = $this->getChannelIdentifierFormula();
+        $identifierFormula = self::getChannelIdentifierFormula();
+
 
         foreach ($bindings as $binding => $value) {
-            $identifierFormula = str_replace("{" . $binding . "}", $value, $identifierFormula);
+            $identifierFormula = Str::replaceFirst("{" . $binding . "}", $value, $identifierFormula);
+        }
+
+        if (Str::contains($identifierFormula, ["{", "}"])) {
+            throw new RuntimeException(sprintf(
+                "Fatal Error: Channel identifier [%s] bindings not properly replaced. Still contains curly braces.",
+                $identifierFormula
+            ));
         }
 
         return $identifierFormula;
@@ -54,9 +70,9 @@ trait UseDynamicChannelFormula
      *
      * @return string
      */
-    public function getJSChannelIdentifier(): string
+    public static function getJSChannelIdentifier(): string
     {
-        return str_replace('{', '${', $this->getChannelIdentifierFormula());
+        return str_replace('{', '${', self::getChannelIdentifierFormula());
     }
 
     /**
@@ -70,7 +86,10 @@ trait UseDynamicChannelFormula
      */
     public function getChannelIdentifierBindings(): array
     {
-        throw new BadMethodCallException("Method must be implemented by base class.");
+        $selfEvent = $this;
+        $callback = self::$dynamicChannel->channelIdentifierBindingCallback;
+
+        return $callback($selfEvent);
     }
 
     /**
@@ -84,7 +103,7 @@ trait UseDynamicChannelFormula
      */
     public function getChannelType(): string
     {
-        return $this->dynamicChannel->channelType;
+        return self::$dynamicChannel->channelType;
     }
 
     /**

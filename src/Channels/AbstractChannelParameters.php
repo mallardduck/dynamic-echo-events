@@ -6,12 +6,27 @@ abstract class AbstractChannelParameters
 {
     public string $channelType;
 
+    public ?array $channelBindingOptions;
+
     public string $channelIdentifierFormula;
 
     /**
-     * @var callable|string
+     * @var callable
+     */
+    public $channelIdentifierBindingCallback;
+
+    /**
+     * @var callable
      */
     public $channelAuthCallback;
 
-    public ?array  $channelBindingOptions;
+    /**
+     * @var null|string
+     */
+    public ?string $channelJsEventCallback;
+
+    public function getJsEventCallback(): string
+    {
+        return $this->channelJsEventCallback ?? '';
+    }
 }

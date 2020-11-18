@@ -2,9 +2,7 @@
 
 namespace MallardDuck\DynamicEcho;
 
-use MallardDuck\DynamicEcho\Channels\ChannelManager;
 use MallardDuck\DynamicEcho\Loader\EventContractLoader;
-use MallardDuck\DynamicEcho\ScriptGenerator\EchoScriptGenerator;
 use MallardDuck\DynamicEcho\ScriptGenerator\ScriptNodeBuilder;
 
 class DynamicEchoService
@@ -20,11 +18,11 @@ class DynamicEchoService
     private ChannelManager $channelManager;
 
     /**
-     * @var EchoScriptGenerator
+     * @var ScriptGenerator
      */
-    private EchoScriptGenerator $scriptGenerator;
+    private ScriptGenerator $scriptGenerator;
 
-    public function __construct(EventContractLoader $loader, EchoScriptGenerator $scriptGenerator)
+    public function __construct(EventContractLoader $loader, ScriptGenerator $scriptGenerator)
     {
         $this->loader = $loader;
         $this->channelManager = new ChannelManager();
@@ -45,9 +43,10 @@ class DynamicEchoService
 
     protected function compiledJSContext(): string
     {
-        $assetWarning = null;
+        $warning = null;
+        $generatedContext = $this->scriptGenerator->rootContext();
 
-        return view('dynamicEcho::context', compact('assetWarning'))->render();
+        return view('dynamicEcho::context', compact('warning', 'generatedContext'))->render();
     }
 
     public function scripts(): string
@@ -63,24 +62,25 @@ class DynamicEchoService
 
     protected function compiledJSScripts(): string
     {
-        $assetWarning = null;
+        $warning = null;
         $loaderItems = $this->loader->load();
 
         // TODO: Allow multiple channels.
         $this->scriptGenerator->pushScriptNode(ScriptNodeBuilder::getPrivateChannelNode(
-            '`App.Models.User.${window.dynamicEcho.userID}`'
+            '`App.Models.User.${window.dynamicEchoOld.userID}`'
         ));
 
         foreach ($loaderItems as $item) {
             $this->scriptGenerator->pushScriptNode(ScriptNodeBuilder::getListenNode(
-                $item['event'],
-                $item['js-handler']
+                $item->eventName,
+                $item->jsCallback
             ));
         }
         // END TO DO
+
         $generatedScript = $this->scriptGenerator->rootScript();
 
-        return view('dynamicEcho::scripts', compact('assetWarning', 'generatedScript'))->render();
+        return view('dynamicEcho::scripts', compact('warning', 'generatedScript'))->render();
     }
 
     protected function buildHtmlStack(string $content, string $renderType): array
@@ -110,7 +110,7 @@ class DynamicEchoService
         return preg_replace('~(\v|\t|\s{2,})~m', '', $subject);
     }
 
-    public function getUsedChannels()
+    public function getUsedChannels(): array
     {
         return $this->channelManager->registeredChannels();
     }

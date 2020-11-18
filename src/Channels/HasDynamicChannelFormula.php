@@ -5,8 +5,22 @@ namespace MallardDuck\DynamicEcho\Channels;
 use BadMethodCallException;
 use Illuminate\Broadcasting\Channel;
 
-interface DynamicChannelFormula
+interface HasDynamicChannelFormula
 {
+    /**
+     * A static method to get the classname of the channel's AbstractChannelParameters.
+     *
+     * The best return would be to return the string using the ::class selector.
+     * So you'd include the trait via use, then define this method yourself.
+     *
+     * @example:
+     *         ToastChannel::class
+     *
+     * @return string
+     * @throws BadMethodCallException
+     */
+    public static function getChannelParametersClassname(): string;
+
     /**
      * A method to get the broadcast channels name formula.
      *
@@ -19,7 +33,7 @@ interface DynamicChannelFormula
      * @return string
      * @throws BadMethodCallException
      */
-    public function getChannelIdentifierFormula(): string;
+    public static function getChannelIdentifierFormula(): string;
 
     /**
      * @example:
@@ -35,7 +49,7 @@ interface DynamicChannelFormula
      *
      * @return string
      */
-    public function getJSChannelIdentifier(): string;
+    public static function getJSChannelIdentifier(): string;
 
     /**
      * A method to get the binding data for this Event's channel.

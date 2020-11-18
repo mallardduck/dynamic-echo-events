@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\ServiceProvider;
 use MallardDuck\DynamicEcho\Loader\EventContractLoader;
-use MallardDuck\DynamicEcho\ScriptGenerator\EchoScriptGenerator;
 
 class DynamicEchoServiceProvider extends ServiceProvider
 {
@@ -37,24 +36,30 @@ class DynamicEchoServiceProvider extends ServiceProvider
 
     protected function registerProviders(): void
     {
+        $this->app->singleton(ChannelManager::class, static function () {
+            return new ChannelManager();
+        });
+
         $this->app->singleton(EventContractLoader::class, static function ($app) {
             return new EventContractLoader(
-                $app->config->get('dynamic-echo.namespace', "App\\Events")
+                $app->config->get('dynamic-echo.namespace', "App\\Events"),
+                $app->make(ChannelManager::class)
             );
         });
 
-        $this->app->singleton(EchoScriptGenerator::class, static function () {
-            return new EchoScriptGenerator();
+        $this->app->singleton(ScriptGenerator::class, static function () {
+            return new ScriptGenerator();
         });
 
         $this->app->singleton(DynamicEchoService::class, static function ($app) {
             return new DynamicEchoService(
                 $app->make(EventContractLoader::class),
-                $app->make(EchoScriptGenerator::class)
+                $app->make(ScriptGenerator::class)
             );
         });
 
         $this->app->alias(DynamicEchoService::class, 'dynamic-echo');
+        $this->app->alias(ChannelManager::class, 'dynamic-echo::channel-manager');
     }
 
     protected function registerConfigs(): void
