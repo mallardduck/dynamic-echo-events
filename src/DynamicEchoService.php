@@ -4,10 +4,11 @@ namespace MallardDuck\DynamicEcho;
 
 use MallardDuck\DynamicEcho\Channels\ChannelManager;
 use MallardDuck\DynamicEcho\Loader\EventContractLoader;
+use MallardDuck\DynamicEcho\ScriptGenerator\EchoScriptGenerator;
+use MallardDuck\DynamicEcho\ScriptGenerator\ScriptNodeBuilder;
 
 class DynamicEchoService
 {
-
     /**
      * @var EventContractLoader
      */
@@ -18,46 +19,90 @@ class DynamicEchoService
      */
     private ChannelManager $channelManager;
 
-    public function __construct()
+    /**
+     * @var EchoScriptGenerator
+     */
+    private EchoScriptGenerator $scriptGenerator;
+
+    public function __construct(EventContractLoader $loader, EchoScriptGenerator $scriptGenerator)
     {
-        $this->loader = new EventContractLoader();
+        $this->loader = $loader;
         $this->channelManager = new ChannelManager();
         $this->loader->setChannelManager($this->channelManager);
+        $this->scriptGenerator = $scriptGenerator;
     }
 
-    // TODO: Split script output up into static and dynamic content.
-    // NOTE: Ideally the static content could be "compiled" more consistently to a cache.
-    // CONT: Then the dynamic ones would just be injected to the page for each user's request.
-    public function scripts(): string
+    public function context(): string
     {
         $debug = config('app.debug');
 
-        $scripts = $this->compiledJSAssets();
+        $context = $this->compiledJSContext();
 
-        $html = [];
-
-        if ($debug) {
-            $html[] = '<!-- Start DynamicEcho Scripts -->';
-        }
-        $html[] = $debug ? $scripts : $this->minify($scripts);
-        if ($debug) {
-            $html[] = '<!-- End DynamicEcho Scripts -->';
-        }
+        $html = $this->buildHtmlStack($context, 'Context');
 
         return implode("\n", $html);
     }
 
-    // TODO: in the future this one would only render the static JS from dynamic Echos.
-    protected function compiledJSAssets(): string
+    protected function compiledJSContext(): string
+    {
+        $assetWarning = null;
+
+        return view('dynamicEcho::context', compact('assetWarning'))->render();
+    }
+
+    public function scripts(): string
+    {
+        $debug = config('app.debug');
+
+        $scripts = $this->compiledJSScripts();
+
+        $html = $this->buildHtmlStack($scripts, 'Scripts');
+
+        return implode("\n", $html);
+    }
+
+    protected function compiledJSScripts(): string
     {
         $assetWarning = null;
         $loaderItems = $this->loader->load();
 
-        if (0 === count($loaderItems)) {
-            return '';
+        // TODO: Allow multiple channels.
+        $this->scriptGenerator->pushScriptNode(ScriptNodeBuilder::getPrivateChannelNode(
+            '`App.Models.User.${window.dynamicEcho.userID}`'
+        ));
+
+        foreach ($loaderItems as $item) {
+            $this->scriptGenerator->pushScriptNode(ScriptNodeBuilder::getListenNode(
+                $item['event'],
+                $item['js-handler']
+            ));
+        }
+        // END TO DO
+        $generatedScript = $this->scriptGenerator->rootScript();
+
+        return view('dynamicEcho::scripts', compact('assetWarning', 'generatedScript'))->render();
+    }
+
+    protected function buildHtmlStack(string $content, string $renderType): array
+    {
+        /**
+         * @var ?bool $debug
+         */
+        static $debug;
+
+        if (null === $debug) {
+            $debug = config('app.debug');
         }
 
-        return view('dynamicEcho::basicJs', compact('assetWarning', 'loaderItems'))->render();
+        if ($debug) {
+            $html[] = '<!-- Start DynamicEcho ' . $renderType . ' -->';
+        }
+        $html[] = $debug ? $content : $this->minify($content);
+        if ($debug) {
+            $html[] = '<!-- End DynamicEcho ' . $renderType . ' -->';
+        }
+
+        return $html;
     }
 
     protected function minify(string $subject): string

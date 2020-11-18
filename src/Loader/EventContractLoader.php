@@ -12,7 +12,7 @@ class EventContractLoader
     /**
      * @var string
      */
-    private $baseNamespace;
+    private string $baseNamespace;
 
     /**
      * @var Collection
@@ -24,12 +24,12 @@ class EventContractLoader
      */
     private ChannelManager $channelManager;
 
-    public function __construct()
+    public function __construct(string $namespace)
     {
-        $this->baseNamespace = $baseNamespace = config('dynamic-echo.namespace', "App\\Events");
+        $this->baseNamespace = $namespace;
         $this->appEvents = collect(require(app()->basePath() . '/vendor/composer/autoload_classmap.php'))
-                                ->filter(static function ($val, $key) use ($baseNamespace) {
-                                    return str_starts_with($key, $baseNamespace);
+                                ->filter(static function ($val, $key) use ($namespace) {
+                                    return str_starts_with($key, $namespace);
                                 });
     }
 
@@ -46,12 +46,15 @@ class EventContractLoader
         // TODO: Actually use channel manager for the events we find.
         $channelManager = $this->channelManager;
 
-        $collection = new Collection();
+        // TODO: Make this collection unique to this use-case; i.e. require that it conform to a specific data shape.
+        $collection = new ChannelAwareEventCollection();
 
 
         $events->each(static function ($val, $key) use ($collection, $baseNamespace) {
             $implements = class_implements($key);
             if (array_key_exists(ImplementsDynamicEcho::class, $implements)) {
+                // TODO: Make this loader aware of what channel these go to.
+                // TODO: Create a DTO for these probably.
                 $collection->push([
                     'event' => str_replace($baseNamespace . '\\', '', $key),
                     'js-handler' => $key::getEventJSCallback()
