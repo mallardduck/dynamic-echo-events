@@ -23,7 +23,11 @@ class ContextNodeCollection extends Collection
             ];
         });
 
-        return json_encode($res->jsonSerialize(), $options);
+        $contextClass = new \stdClass();
+        $contextClass->active = false;
+        $contextClass->channelStack = $res->jsonSerialize();
+
+        return json_encode($contextClass, $options);
     }
 
 }
