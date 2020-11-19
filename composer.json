@@ -36,7 +36,8 @@
         "phpcompatibility/php-compatibility": "*",
         "phpunit/phpunit": "^8.4|^9.0",
         "psy/psysh": "@stable",
-        "squizlabs/php_codesniffer": "*"
+        "squizlabs/php_codesniffer": "*",
+        "roave/better-reflection": "^4.3"
     },
     "autoload": {
         "psr-4": {

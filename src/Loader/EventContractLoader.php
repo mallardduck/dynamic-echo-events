@@ -21,13 +21,26 @@ class EventContractLoader
      */
     private ChannelManager $channelManager;
 
+    private function getBaseComposerPath(): string
+    {
+        $laravelBasePath = app()->basePath();
+        $isTests = Str::contains($laravelBasePath, [
+            "dynamic-echo-events/tests",
+            "dynamic-echo-events/vendor/orchestra/testbench-core",
+        ]);
+        if ($isTests) {
+            return __DIR__ . '/../../vendor/composer/autoload_classmap.php';
+        }
+        return $laravelBasePath . '/vendor/composer/autoload_classmap.php';
+    }
+
     public function __construct(ChannelManager $channelManager, string $namespace)
     {
         $this->channelManager = $channelManager;
-        $this->appEvents = collect(require(app()->basePath() . '/vendor/composer/autoload_classmap.php'))
-                                ->filter(static function ($val, $key) use ($namespace) {
-                                    return str_starts_with($key, $namespace);
-                                });
+        $this->appEvents = collect(require($this->getBaseComposerPath()))
+                            ->filter(static function ($val, $key) use ($namespace) {
+                                return str_starts_with($key, $namespace);
+                            });
     }
 
     public function load(): ChannelAwareEventCollection
