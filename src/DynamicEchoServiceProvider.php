@@ -2,7 +2,8 @@
 
 namespace MallardDuck\DynamicEcho;
 
-use Illuminate\Support\Facades\App;
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Foundation\PackageManifest;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\ServiceProvider;
@@ -10,6 +11,7 @@ use MallardDuck\DynamicEcho\Console\Commands\InstallExamplesCommand;
 use MallardDuck\DynamicEcho\Console\Commands\PrintChannels;
 use MallardDuck\DynamicEcho\Loader\ChannelAwareEventCollection;
 use MallardDuck\DynamicEcho\Loader\ChannelEventCollection;
+use MallardDuck\DynamicEcho\Loader\ComposerResolver;
 use MallardDuck\DynamicEcho\Loader\EventContractLoader;
 
 class DynamicEchoServiceProvider extends ServiceProvider
@@ -45,10 +47,17 @@ class DynamicEchoServiceProvider extends ServiceProvider
             return new ChannelManager();
         });
 
+        $this->app->singleton(ComposerResolver::class, static function ($app) {
+            return new ComposerResolver(
+                $app->make(Filesystem::class),
+                $app->config->get('dynamic-echo.namespace', "App\\Events")
+            );
+        });
+
         $this->app->singleton(EventContractLoader::class, static function ($app) {
             return new EventContractLoader(
                 $app->make(ChannelManager::class),
-                $app->config->get('dynamic-echo.namespace', "App\\Events")
+                $app->make(ComposerResolver::class)
             );
         });
 

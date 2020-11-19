@@ -21,13 +21,16 @@ class EventContractLoader
      */
     private ChannelManager $channelManager;
 
-    public function __construct(ChannelManager $channelManager, string $namespace)
+    /**
+     * @var ComposerResolver
+     */
+    private ComposerResolver $composerResolver;
+
+    public function __construct(ChannelManager $channelManager, ComposerResolver $composerResolver)
     {
         $this->channelManager = $channelManager;
-        $this->appEvents = collect(require(app()->basePath() . '/vendor/composer/autoload_classmap.php'))
-                                ->filter(static function ($val, $key) use ($namespace) {
-                                    return str_starts_with($key, $namespace);
-                                });
+        $this->composerResolver = $composerResolver;
+        $this->appEvents = collect();
     }
 
     public function load(): ChannelAwareEventCollection
