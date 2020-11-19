@@ -9,8 +9,10 @@ use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\ServiceProvider;
 use MallardDuck\DynamicEcho\Console\Commands\InstallExamplesCommand;
 use MallardDuck\DynamicEcho\Console\Commands\PrintChannels;
-use MallardDuck\DynamicEcho\Loader\ChannelAwareEventCollection;
-use MallardDuck\DynamicEcho\Loader\ChannelEventCollection;
+use MallardDuck\DynamicEcho\Collections\{
+    ChannelEventCollection,
+    ChannelAwareEventCollection
+};
 use MallardDuck\DynamicEcho\Loader\ComposerResolver;
 use MallardDuck\DynamicEcho\Loader\EventContractLoader;
 

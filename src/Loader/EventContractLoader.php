@@ -6,6 +6,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use MallardDuck\DynamicEcho\ChannelManager;
 use MallardDuck\DynamicEcho\Channels\AbstractChannelParameters;
+use MallardDuck\DynamicEcho\Collections\ChannelAwareEventCollection;
 use MallardDuck\DynamicEcho\Contracts\HasDynamicChannelFormula;
 
 // TODO: Make this class good at loading channels and events - then rename it properly.
