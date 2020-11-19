@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\ServiceProvider;
+use MallardDuck\DynamicEcho\Console\Commands\InstallExamplesCommand;
 use MallardDuck\DynamicEcho\Console\Commands\PrintChannels;
 use MallardDuck\DynamicEcho\Loader\ChannelAwareEventCollection;
 use MallardDuck\DynamicEcho\Loader\ChannelEventCollection;
@@ -121,6 +122,7 @@ class DynamicEchoServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 PrintChannels::class,
+                InstallExamplesCommand::class,
             ]);
         }
     }
