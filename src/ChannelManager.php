@@ -2,6 +2,7 @@
 
 namespace MallardDuck\DynamicEcho;
 
+use MallardDuck\DynamicEcho\Loader\ChannelEventCollection;
 use MallardDuck\DynamicEcho\Loader\LoadedEventDTO;
 use MallardDuck\DynamicEcho\Loader\ChannelAwareEventCollection;
 
@@ -22,11 +23,6 @@ class ChannelManager
     {
         // TODO: Make this collection unique to this use-case; i.e. require that it conform to a specific data shape.
         $this->channelCollection = new ChannelAwareEventCollection();
-    }
-
-    public function registeredChannelNames(): array
-    {
-        return $this->channelCollection->keys()->toArray();
     }
 
     public function getChannelEventCollection(): ChannelAwareEventCollection
@@ -58,5 +54,39 @@ class ChannelManager
         $this->channelCollection = $this->channelCollection->push(...$newItems);
 
         return $this;
+    }
+
+    public function registeredChannelNames()
+    {
+        return $this->channelCollection->keys();
+    }
+
+    public function registeredChannelInfo()
+    {
+        /**
+         * @var ChannelEventCollection $channelGroup
+         */
+        return $this->channelCollection->map(static function ($channelGroup, $key) {
+            $first = true;
+            $channelInfo = [
+                'authName' => $key,
+                'type' => null,
+                'authCallback' => null,
+            ];
+            /**
+             * @var LoadedEventDTO $val
+             */
+            $events = $channelGroup->map(static function ($val) use ($first, &$channelInfo) {
+                if ($first) {
+                    $channelInfo['type'] = $val->getParameter('channelType');
+                    $channelInfo['authCallback'] = $val->getParameter('channelAuthCallback');
+                    $first = false;
+                }
+                return $val->fullEventName;
+            })->toArray();
+            $channelInfo['events'] = $events;
+
+            return $channelInfo;
+        });
     }
 }

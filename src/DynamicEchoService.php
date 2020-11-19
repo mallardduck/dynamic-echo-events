@@ -2,8 +2,8 @@
 
 namespace MallardDuck\DynamicEcho;
 
+use MallardDuck\DynamicEcho\Loader\ChannelAwareEventCollection;
 use MallardDuck\DynamicEcho\Loader\ChannelEventCollection;
-use MallardDuck\DynamicEcho\Loader\EventContractLoader;
 use MallardDuck\DynamicEcho\Loader\LoadedEventDTO;
 use MallardDuck\DynamicEcho\ScriptGenerator\ScriptNodeBuilder;
 
@@ -32,8 +32,7 @@ class DynamicEchoService
         $debug = config('app.debug');
 
         $context = $this->compiledJSContext();
-
-        $html = $this->buildHtmlStack($context, 'Context');
+        $html = $this->buildHtmlStack($context, ucfirst(__FUNCTION__));
 
         return implode("\n", $html);
     }
@@ -81,8 +80,7 @@ class DynamicEchoService
         $debug = config('app.debug');
 
         $scripts = $this->compiledJSScripts();
-
-        $html = $this->buildHtmlStack($scripts, 'Scripts');
+        $html = $this->buildHtmlStack($scripts, ucfirst(__FUNCTION__));
 
         return implode("\n", $html);
     }
@@ -150,8 +148,13 @@ class DynamicEchoService
         return preg_replace('~(\v|\t|\s{2,})~m', '', $subject);
     }
 
-    public function getUsedChannels(): array
+    public function getDiscoveredChannels(): ChannelAwareEventCollection
     {
-        return $this->channelManager->registeredChannels();
+        return $this->channelManager->registeredChannelNames();
+    }
+
+    public function getExtendedChannelInfo()
+    {
+        return $this->channelManager->registeredChannelInfo();
     }
 }

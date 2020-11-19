@@ -2,6 +2,7 @@
 
 namespace MallardDuck\DynamicEcho\Channels;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use MallardDuck\DynamicEcho\Contracts\HasDynamicChannelFormula;
 
@@ -16,7 +17,7 @@ final class PrivateChannelParameters extends AbstractChannelParameters
     {
         $this->channelType = \Illuminate\Broadcasting\PrivateChannel::class;
         $this->channelAuthName = 'App.Models.User.{userId}';
-        $this->channelAuthCallback = static function ($user, $userId) {
+        $this->channelAuthCallback = static function (User $user, $userId) {
             return (int) $user->id === (int) $userId;
         };
         $this->channelContextBindingCallback = static function (Request $request) {

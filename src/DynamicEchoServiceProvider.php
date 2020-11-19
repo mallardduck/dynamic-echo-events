@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\ServiceProvider;
+use MallardDuck\DynamicEcho\Console\Commands\PrintChannels;
 use MallardDuck\DynamicEcho\Loader\ChannelEventCollection;
 use MallardDuck\DynamicEcho\Loader\EventContractLoader;
 
@@ -33,6 +34,7 @@ class DynamicEchoServiceProvider extends ServiceProvider
         $this->registerViews();
         $this->registerBladeDirectives();
         $this->registerEchoChannels();
+        $this->registerConsoleCommands();
     }
 
     protected function registerProviders(): void
@@ -110,6 +112,15 @@ class DynamicEchoServiceProvider extends ServiceProvider
          */
         foreach ($channels as $channelName => $channelGroup) {
             Broadcast::channel($channelGroup->getChannelAuthName(), $channelGroup->getChannelAuthCallback());
+        }
+    }
+
+    private function registerConsoleCommands()
+    {
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                PrintChannels::class,
+            ]);
         }
     }
 }
