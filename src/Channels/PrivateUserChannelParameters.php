@@ -11,7 +11,7 @@ use MallardDuck\DynamicEcho\Contracts\HasDynamicChannelFormula;
  *
  * @mixin AbstractChannelParameters
  */
-final class PrivateChannelParameters extends AbstractChannelParameters
+final class PrivateUserChannelParameters extends AbstractChannelParameters
 {
     public function __construct()
     {

@@ -7,12 +7,21 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Auth;
-use MallardDuck\DynamicEcho\Contracts\ImplementsDynamicEcho;
-use MallardDuck\DynamicEcho\Traits\PrivateDynamicEchoChannel;
+use MallardDuck\DynamicEcho\Channels\{
+    BaseDynamicChannelFormula,
+    PrivateUserChannelParameters,
+};
+use MallardDuck\DynamicEcho\Contracts\{
+    HasDynamicChannelFormula,
+    ImplementsDynamicEcho,
+};
 
-class ConsoleLogEvent implements ShouldBroadcastNow, ImplementsDynamicEcho
+class ConsoleLogEvent implements ShouldBroadcastNow, ImplementsDynamicEcho, HasDynamicChannelFormula
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels, PrivateDynamicEchoChannel;
+    use Dispatchable;
+    use InteractsWithSockets;
+    use SerializesModels;
+    use BaseDynamicChannelFormula;
 
     public int $userId;
 
@@ -31,10 +40,15 @@ class ConsoleLogEvent implements ShouldBroadcastNow, ImplementsDynamicEcho
         $this->message = $message;
     }
 
+    public static function getChannelParametersClassname(): string
+    {
+        return PrivateUserChannelParameters::class;
+    }
+
     /**
      * Get the JS callback for this event.
      *
-     * In this case, it simply pushes a message to the JS console log.
+     * In this case, we're just shoving a message into console.log.
      *
      * @return string
      */
@@ -46,5 +60,4 @@ class ConsoleLogEvent implements ShouldBroadcastNow, ImplementsDynamicEcho
 }
 JSCALLBACK;
     }
-
 }

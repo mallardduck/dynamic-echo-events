@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\ServiceProvider;
 use MallardDuck\DynamicEcho\Console\Commands\PrintChannels;
+use MallardDuck\DynamicEcho\Loader\ChannelAwareEventCollection;
 use MallardDuck\DynamicEcho\Loader\ChannelEventCollection;
 use MallardDuck\DynamicEcho\Loader\EventContractLoader;
 
@@ -102,12 +103,12 @@ class DynamicEchoServiceProvider extends ServiceProvider
         $eventContractLoader = $this->app->make(EventContractLoader::class);
 
         /**
-         * @var ChannelEventCollection $channels
+         * @var ChannelAwareEventCollection $channels
          */
         $channels = $eventContractLoader->load();
-        // TODO: Consider if the contract loading needs to happen at a different phase in the lifecycle.
 
         /**
+         * @var string $channelName
          * @var ChannelEventCollection $channelGroup
          */
         foreach ($channels as $channelName => $channelGroup) {
@@ -115,7 +116,7 @@ class DynamicEchoServiceProvider extends ServiceProvider
         }
     }
 
-    private function registerConsoleCommands()
+    protected function registerConsoleCommands(): void
     {
         if ($this->app->runningInConsole()) {
             $this->commands([
