@@ -35,7 +35,6 @@
         "orchestra/testbench-dusk": "^5.2|^6.0",
         "phpcompatibility/php-compatibility": "*",
         "phpunit/phpunit": "^8.4|^9.0",
-        "psy/psysh": "@stable",
         "squizlabs/php_codesniffer": "*"
     },
     "autoload": {
