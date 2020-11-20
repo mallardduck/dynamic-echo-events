@@ -3,8 +3,9 @@
 namespace MallardDuck\DynamicEcho\Tests\Unit;
 
 use MallardDuck\DynamicEcho\ScriptGenerator;
+use MallardDuck\DynamicEcho\Tests\BaseTest;
 
-class ScriptGeneratorTest extends \MallardDuck\DynamicEcho\Tests\BaseTest
+class ScriptGeneratorTest extends BaseTest
 {
     public function testInstanceIsCorrectClass()
     {
