@@ -36,7 +36,8 @@
         "orchestra/testbench-dusk": "^5.2|^6.0",
         "phpcompatibility/php-compatibility": "*",
         "phpunit/phpunit": "^8.4|^9.0",
-        "squizlabs/php_codesniffer": "*"
+        "squizlabs/php_codesniffer": "*",
+        "roave/better-reflection": "^4.3"
     },
     "autoload": {
         "psr-4": {

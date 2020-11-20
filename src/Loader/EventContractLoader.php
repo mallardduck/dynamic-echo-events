@@ -26,17 +26,17 @@ class EventContractLoader
     /**
      * @var CacheResolver
      */
-    private CacheResolver $composerResolver;
+    private CacheResolver $composeCacheResolver;
 
-    public function __construct(ChannelManager $channelManager, CacheResolver $composerResolver)
+    public function __construct(ChannelManager $channelManager, CacheResolver $composeCacheResolver)
     {
         $this->channelManager = $channelManager;
-        $this->composerResolver = $composerResolver;
+        $this->composeCacheResolver = $composeCacheResolver;
     }
 
     public function load(): ChannelAwareEventCollection
     {
-        $events = $this->composerResolver->getEvents();
+        $events = $this->composeCacheResolver->getEvents();
         $channelManager = $this->channelManager;
 
         $events->filter(static function ($val, $key) {
