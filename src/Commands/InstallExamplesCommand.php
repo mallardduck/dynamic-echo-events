@@ -1,6 +1,6 @@
 <?php
 
-namespace MallardDuck\DynamicEcho\Console\Commands;
+namespace MallardDuck\DynamicEcho\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;

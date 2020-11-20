@@ -2,14 +2,14 @@
 
 namespace MallardDuck\DynamicEcho;
 
-use Illuminate\Support\Facades\App;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\ServiceProvider;
-use MallardDuck\DynamicEcho\Console\Commands\InstallExamplesCommand;
-use MallardDuck\DynamicEcho\Console\Commands\PrintChannels;
-use MallardDuck\DynamicEcho\Loader\ChannelAwareEventCollection;
-use MallardDuck\DynamicEcho\Loader\ChannelEventCollection;
+use MallardDuck\DynamicEcho\Collections\{ChannelAwareEventCollection, ChannelEventCollection};
+use MallardDuck\DynamicEcho\Commands\InstallExamplesCommand;
+use MallardDuck\DynamicEcho\Commands\PrintChannels;
+use MallardDuck\DynamicEcho\Composer\CacheResolver;
 use MallardDuck\DynamicEcho\Loader\EventContractLoader;
 
 class DynamicEchoServiceProvider extends ServiceProvider
@@ -21,8 +21,9 @@ class DynamicEchoServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->registerProviders();
+        $this->registerComposerResolver();
         $this->mergeConfigFrom(__DIR__ . '/../config/dynamic-echo.php', 'dynamic-echo');
+        $this->registerServices();
     }
 
     /**
@@ -39,7 +40,17 @@ class DynamicEchoServiceProvider extends ServiceProvider
         $this->registerConsoleCommands();
     }
 
-    protected function registerProviders(): void
+    protected function registerComposerResolver(): void
+    {
+        $this->app->singleton(CacheResolver::class, static function ($app) {
+            return (new CacheResolver(
+                $app->config->get('dynamic-echo.namespace', "App\\Events"),
+                $app->bootstrapPath('cache/dynamic-echo-discovery.php')
+            ));
+        });
+    }
+
+    protected function registerServices(): void
     {
         $this->app->singleton(ChannelManager::class, static function () {
             return new ChannelManager();
@@ -48,7 +59,7 @@ class DynamicEchoServiceProvider extends ServiceProvider
         $this->app->singleton(EventContractLoader::class, static function ($app) {
             return new EventContractLoader(
                 $app->make(ChannelManager::class),
-                $app->config->get('dynamic-echo.namespace', "App\\Events")
+                $app->make(CacheResolver::class)->setFilesystem($app->make(Filesystem::class))->build()
             );
         });
 

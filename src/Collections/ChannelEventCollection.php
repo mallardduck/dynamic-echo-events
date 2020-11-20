@@ -1,10 +1,11 @@
 <?php
 
-namespace MallardDuck\DynamicEcho\Loader;
+namespace MallardDuck\DynamicEcho\Collections;
 
 use Closure;
 use Illuminate\Support\Collection;
 use MallardDuck\DynamicEcho\Channels\AbstractChannelParameters;
+use MallardDuck\DynamicEcho\Loader\LoadedEventDTO;
 
 /**
  * @example This is an example shape of how this collection should store data.
@@ -36,7 +37,7 @@ class ChannelEventCollection extends Collection
 
     /**
      * An md5 of the $channelAuthName - used for setting JS context vars.
-     * @var string
+     * @var string|null
      */
     private $channelJsVarKey;
 

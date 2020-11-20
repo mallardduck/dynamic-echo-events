@@ -6,6 +6,8 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use MallardDuck\DynamicEcho\ChannelManager;
 use MallardDuck\DynamicEcho\Channels\AbstractChannelParameters;
+use MallardDuck\DynamicEcho\Collections\ChannelAwareEventCollection;
+use MallardDuck\DynamicEcho\Composer\CacheResolver;
 use MallardDuck\DynamicEcho\Contracts\HasDynamicChannelFormula;
 
 // TODO: Make this class good at loading channels and events - then rename it properly.
@@ -21,31 +23,20 @@ class EventContractLoader
      */
     private ChannelManager $channelManager;
 
-    private function getBaseComposerPath(): string
-    {
-        $laravelBasePath = app()->basePath();
-        $isTests = Str::contains($laravelBasePath, [
-            "dynamic-echo-events/tests",
-            "dynamic-echo-events/vendor/orchestra/testbench-core",
-        ]);
-        if ($isTests) {
-            return __DIR__ . '/../../vendor/composer/autoload_classmap.php';
-        }
-        return $laravelBasePath . '/vendor/composer/autoload_classmap.php';
-    }
+    /**
+     * @var CacheResolver
+     */
+    private CacheResolver $composeCacheResolver;
 
-    public function __construct(ChannelManager $channelManager, string $namespace)
+    public function __construct(ChannelManager $channelManager, CacheResolver $composeCacheResolver)
     {
         $this->channelManager = $channelManager;
-        $this->appEvents = collect(require($this->getBaseComposerPath()))
-                            ->filter(static function ($val, $key) use ($namespace) {
-                                return str_starts_with($key, $namespace);
-                            });
+        $this->composeCacheResolver = $composeCacheResolver;
     }
 
     public function load(): ChannelAwareEventCollection
     {
-        $events = $this->appEvents;
+        $events = $this->composeCacheResolver->getEvents();
         $channelManager = $this->channelManager;
 
         $events->filter(static function ($val, $key) {

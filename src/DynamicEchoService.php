@@ -2,8 +2,10 @@
 
 namespace MallardDuck\DynamicEcho;
 
-use MallardDuck\DynamicEcho\Loader\ChannelAwareEventCollection;
-use MallardDuck\DynamicEcho\Loader\ChannelEventCollection;
+use MallardDuck\DynamicEcho\Collections\{
+    ChannelEventCollection,
+    ChannelAwareEventCollection
+};
 use MallardDuck\DynamicEcho\Loader\LoadedEventDTO;
 use MallardDuck\DynamicEcho\ScriptGenerator\ScriptNodeBuilder;
 

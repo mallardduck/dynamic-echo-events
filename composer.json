@@ -25,6 +25,7 @@
     "require": {
         "php": "^7.4|^8.0",
         "ext-json": "*",
+        "composer/composer": "^2.0",
         "illuminate/contracts": "^7.0|^8.0"
     },
     "require-dev": {
@@ -35,7 +36,6 @@
         "orchestra/testbench-dusk": "^5.2|^6.0",
         "phpcompatibility/php-compatibility": "*",
         "phpunit/phpunit": "^8.4|^9.0",
-        "psy/psysh": "@stable",
         "squizlabs/php_codesniffer": "*",
         "roave/better-reflection": "^4.3"
     },
@@ -70,6 +70,9 @@
             "aliases": {
                 "DynamicEcho": "MallardDuck\\DynamicEcho\\DynamicEcho"
             }
+        },
+        "dynamic-echo": {
+            "namespace": "MallardDuck\\DynamicEcho\\Events"
         }
     },
     "minimum-stability": "dev",

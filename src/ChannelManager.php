@@ -2,9 +2,11 @@
 
 namespace MallardDuck\DynamicEcho;
 
-use MallardDuck\DynamicEcho\Loader\ChannelEventCollection;
 use MallardDuck\DynamicEcho\Loader\LoadedEventDTO;
-use MallardDuck\DynamicEcho\Loader\ChannelAwareEventCollection;
+use MallardDuck\DynamicEcho\Collections\{
+    ChannelEventCollection,
+    ChannelAwareEventCollection
+};
 
 class ChannelManager
 {
