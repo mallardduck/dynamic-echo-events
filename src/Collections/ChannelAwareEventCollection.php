@@ -1,8 +1,9 @@
 <?php
 
-namespace MallardDuck\DynamicEcho\Loader;
+namespace MallardDuck\DynamicEcho\Collections;
 
 use Illuminate\Support\Collection;
+use MallardDuck\DynamicEcho\Loader\LoadedEventDTO;
 
 /**
  * @example This is an example shape of how this collection should store data.

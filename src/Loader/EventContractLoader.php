@@ -6,6 +6,8 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use MallardDuck\DynamicEcho\ChannelManager;
 use MallardDuck\DynamicEcho\Channels\AbstractChannelParameters;
+use MallardDuck\DynamicEcho\Collections\ChannelAwareEventCollection;
+use MallardDuck\DynamicEcho\Composer\CacheResolver;
 use MallardDuck\DynamicEcho\Contracts\HasDynamicChannelFormula;
 
 // TODO: Make this class good at loading channels and events - then rename it properly.
@@ -21,18 +23,20 @@ class EventContractLoader
      */
     private ChannelManager $channelManager;
 
-    public function __construct(ChannelManager $channelManager, string $namespace)
+    /**
+     * @var CacheResolver
+     */
+    private CacheResolver $composerResolver;
+
+    public function __construct(ChannelManager $channelManager, CacheResolver $composerResolver)
     {
         $this->channelManager = $channelManager;
-        $this->appEvents = collect(require(app()->basePath() . '/vendor/composer/autoload_classmap.php'))
-                                ->filter(static function ($val, $key) use ($namespace) {
-                                    return str_starts_with($key, $namespace);
-                                });
+        $this->composerResolver = $composerResolver;
     }
 
     public function load(): ChannelAwareEventCollection
     {
-        $events = $this->appEvents;
+        $events = $this->composerResolver->getEvents();
         $channelManager = $this->channelManager;
 
         $events->filter(static function ($val, $key) {
