@@ -7,12 +7,12 @@ use Illuminate\Foundation\PackageManifest;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\ServiceProvider;
-use MallardDuck\DynamicEcho\Console\Commands\InstallExamplesCommand;
-use MallardDuck\DynamicEcho\Console\Commands\PrintChannels;
 use MallardDuck\DynamicEcho\Collections\{
     ChannelEventCollection,
     ChannelAwareEventCollection
 };
+use MallardDuck\DynamicEcho\Commands\InstallExamplesCommand;
+use MallardDuck\DynamicEcho\Commands\PrintChannels;
 use MallardDuck\DynamicEcho\Loader\ComposerResolver;
 use MallardDuck\DynamicEcho\Loader\EventContractLoader;
 
