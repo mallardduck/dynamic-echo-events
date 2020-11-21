@@ -3,7 +3,9 @@
 namespace MallardDuck\DynamicEcho\Composer;
 
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 class CacheResolver
 {
@@ -49,17 +51,20 @@ class CacheResolver
             $packages = $installed['packages'] ?? $installed;
         }
 
+        /**
+         * @var Collection $packages
+         */
         $packages = collect($packages)->mapWithKeys(function ($package) {
             return [$this->format($package['name']) => $package['extra']['dynamic-echo'] ?? []];
         })->filter()->all();
 
+        $namespaces = collect($packages)->mapWithKeys(static function ($val) {
+            return [$val['namespace']];
+        })->push($this->appNamespace)->all();
+
         if (null !== ($classMap = $this->getClassMap())) {
-            $installed = collect($classMap);
-            // TODO: just merge this into an array from the packages.
-            $namespace = $this->appNamespace;
-            $events = $installed->filter(static function ($val, $key) use ($namespace) {
-                // TODO: update $namespace to be $namespaces array - then fix logic to match array of options.
-                return str_starts_with($key, $namespace);
+            $events = collect($classMap)->filter(static function ($val, $key) use ($namespaces) {
+                return Str::startsWith($key, $namespaces);
             })->filter()->all();
         }
 
