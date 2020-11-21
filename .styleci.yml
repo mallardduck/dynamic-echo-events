@@ -1,2 +1,3 @@
 preset: psr12
-single_import_per_statement: false
+disabled:
+  - single_import_per_statement
