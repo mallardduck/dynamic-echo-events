@@ -1,2 +1,2 @@
 preset: psr12
-  single_import_per_statement: false
+single_import_per_statement: false
