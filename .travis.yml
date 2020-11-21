@@ -1,0 +1,41 @@
+os: linux
+dist: focal
+language: php
+
+php:
+  - 7.4
+  - nightly
+
+matrix:
+  allow_failures:
+    - php: nightly
+
+env:
+  global:
+    - CC_TEST_REPORTER_ID=edba059fd1aad50bddd3f1aa1192450bfbc0a187df3f7d017b3fa7b77fc15b32
+
+## Cache composer
+cache:
+  directories:
+    - $HOME/.composer/cache
+
+branches:
+  except:
+    - /^analysis-.*$/
+
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+  - travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --prefer-dist
+
+script:
+  - vendor/bin/phpcs --standard=psr12 src/
+  - vendor/bin/phpunit --coverage-text --coverage-clover=build/logs/clover.xml
+
+after_success:
+  - travis_retry php vendor/bin/php-coveralls -v
+  - wget https://scrutinizer-ci.com/ocular.phar
+  - php ocular.phar code-coverage:upload --format=php-clover build/logs/clover.xml
+  - bash <(curl -s https://codecov.io/bash)
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
