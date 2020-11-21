@@ -5,6 +5,7 @@ build:
       environment:
         php:
           version: 7.4
+          compile_options: '--with-zip'
     tests: true
     analysis:
       tests:
