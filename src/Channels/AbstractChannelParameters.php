@@ -101,7 +101,7 @@ abstract class AbstractChannelParameters
         // TODO: make this easier to manage in-case channelStack stuff needs to be dynamic.
         $baseJsVar = sprintf("%s.channelStack['%s'].", $baseJsVarScope, md5($this->channelAuthName));
         // Replace the Laravel braces with JS braces and variable roots.
-        $jsRouteTemplate = str_replace('{', '${'.$baseJsVar, $this->channelAuthName);
+        $jsRouteTemplate = str_replace('{', '${' . $baseJsVar, $this->channelAuthName);
         // Wrap the string in backticks/graves for JS template literals.
         return "`$jsRouteTemplate`";
     }

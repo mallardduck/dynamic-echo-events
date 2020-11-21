@@ -43,5 +43,4 @@ class DynamicEchoServiceProviderTest extends BaseTest
             DynamicEchoService::class
         );
     }
-
 }

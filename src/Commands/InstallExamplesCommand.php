@@ -39,12 +39,12 @@ class InstallExamplesCommand extends Command
     public function handle(): int
     {
         $this->info("Starting installer for example events.");
-        (new Filesystem)->ensureDirectoryExists(app_path('Events'));
+        (new Filesystem())->ensureDirectoryExists(app_path('Events'));
 
         $this->info("Installing ConsoleLogEvent.");
-        copy(__DIR__.'/../../../examples/app/Events/ConsoleLogEvent.php', app_path('Events/ConsoleLogEvent.php'));
+        copy(__DIR__ . '/../../../examples/app/Events/ConsoleLogEvent.php', app_path('Events/ConsoleLogEvent.php'));
         $this->info("Installing ToastEvent.");
-        copy(__DIR__.'/../../../examples/app/Events/ToastEvent.php', app_path('Events/ToastEvent.php'));
+        copy(__DIR__ . '/../../../examples/app/Events/ToastEvent.php', app_path('Events/ToastEvent.php'));
         $this->info("Examples installed.");
         return 0;
     }

@@ -7,7 +7,6 @@ use JsonSerializable;
 
 class ContextNode extends BaseNode implements JsonSerializable
 {
-
     public function jsonSerialize()
     {
         throw new BadMethodCallException(

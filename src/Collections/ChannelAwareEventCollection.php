@@ -28,7 +28,6 @@ use MallardDuck\DynamicEcho\Loader\LoadedEventDTO;
  */
 class ChannelAwareEventCollection extends Collection
 {
-
     /**
      * The items contained in the collection.
      *
