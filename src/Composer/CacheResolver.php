@@ -3,7 +3,6 @@
 namespace MallardDuck\DynamicEcho\Composer;
 
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
@@ -51,9 +50,6 @@ class CacheResolver
             $packages = $installed['packages'] ?? $installed;
         }
 
-        /**
-         * @var Collection $packages
-         */
         $packages = collect($packages)->mapWithKeys(function ($package) {
             return [$this->format($package['name']) => $package['extra']['dynamic-echo'] ?? []];
         })->filter()->all();
@@ -116,10 +112,10 @@ class CacheResolver
         return str_replace($this->getVendorPath() . '/', '', $package);
     }
 
-    protected function write(array $manifest)
+    protected function write(array $manifest): void
     {
         if (! is_writable($dirname = dirname($this->manifestPath))) {
-            throw new Exception("The {$dirname} directory must be present and writable.");
+            throw new \RuntimeException("The {$dirname} directory must be present and writable.");
         }
 
         $this->filesystem->replace(
