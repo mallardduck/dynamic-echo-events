@@ -1,0 +1,47 @@
+# language: php
+build:
+  nodes:
+    tests: true
+    analysis:
+      tests:
+        override:
+          -
+            command: phpcs-run
+            use_website_config: true
+          - php-scrutinizer-run
+
+checks:
+  php:
+    avoid_closing_tag: true
+    assignment_of_null_return: true
+    avoid_duplicate_types: true
+    code_rating: true
+    comparison_always_same_result: true
+    deadlock_detection_in_loops: false
+    deprecated_code_usage: true
+    duplication: true
+    encourage_shallow_comparison: true
+    fix_doc_comments: true
+    no_debug_code: true
+    no_short_open_tag: true
+    simplify_boolean_return: true
+    check_method_contracts:
+      verify_interface_like_constraints: true
+      verify_documented_constraints: true
+      verify_parent_constraints: true
+    parameters_in_camelcaps: true
+    no_goto: true
+
+filter:
+  excluded_paths:
+    - "tests/"
+    # Everything in a root level "tests" directory will be excluded
+  dependency_paths:
+    - "vendor/"
+    # Everything in a root level "lib" directory will be excluded from analysis
+    # but treated as a dependency
+
+tools:
+  external_code_coverage:
+    timeout: 300
+    runs: 2
