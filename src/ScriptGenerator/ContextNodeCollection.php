@@ -8,7 +8,6 @@ use MallardDuck\DynamicEcho\ScriptGenerator\Nodes\ChannelContextNode;
 
 class ContextNodeCollection extends Collection
 {
-
     /**
      * Get the collection of items as JSON.
      *
@@ -29,5 +28,4 @@ class ContextNodeCollection extends Collection
 
         return json_encode($contextClass, $options);
     }
-
 }

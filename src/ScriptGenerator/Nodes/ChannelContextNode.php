@@ -15,7 +15,6 @@ class ChannelContextNode extends ContextNode
 
     public function __toString()
     {
-
         $res = "";
         $count = count($this->channelContext);
         foreach ($this->channelContext as $key => $value) {
@@ -32,5 +31,4 @@ class ChannelContextNode extends ContextNode
     {
         return json_encode([$this->channelJsVarKey => $this->channelContext]);
     }
-
 }

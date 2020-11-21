@@ -7,7 +7,6 @@ use Illuminate\Foundation\Application;
 
 class ScriptsHelper
 {
-
     /**
      * Handle the post-install Composer event.
      *

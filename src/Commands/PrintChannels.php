@@ -72,7 +72,7 @@ class PrintChannels extends Command
                     $key,
                     $val['type'],
                     sprintf("%s - %s", $callbackType, implode(", ", $args)),
-                    implode(",".PHP_EOL, $val['events']),
+                    implode("," . PHP_EOL, $val['events']),
                 ];
             });
         }
