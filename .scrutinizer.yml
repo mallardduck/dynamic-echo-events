@@ -2,8 +2,8 @@
 build:
   environment:
     php:
-      version: "7.4.12"
-      compile_options: '--with-pear --with-zip  --with-curl'
+      version: "7.4"
+      compile_options: '--with-openssl --with-pear --with-zip  --with-curl'
   nodes:
     analysis:
       tests:
