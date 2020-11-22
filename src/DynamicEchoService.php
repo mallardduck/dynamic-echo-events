@@ -125,11 +125,11 @@ class DynamicEchoService
          * @var ?bool $debug
          */
         static $debug;
-
         if (null === $debug) {
             $debug = config('app.debug');
         }
 
+        $html = [];
         if ($debug) {
             $html[] = '<!-- Start DynamicEcho ' . $renderType . ' -->';
         }

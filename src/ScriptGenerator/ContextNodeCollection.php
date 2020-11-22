@@ -16,7 +16,7 @@ class ContextNodeCollection extends Collection
      */
     public function toJson($options = 0)
     {
-        $res = $this->mapWithKeys(static function ($val, $key) {
+        $res = $this->mapWithKeys(static function ($val) {
             return [
                 $val->channelJsVarKey => $val->channelContext
             ];
