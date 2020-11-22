@@ -7,13 +7,13 @@ use MallardDuck\DynamicEcho\Tests\BaseTest;
 
 class BaseNodeTest extends BaseTest
 {
-    function testBaseNodeAbstractException()
+    public function testBaseNodeAbstractException()
     {
         self::expectException(\Error::class);
         $node = new BaseNode();
     }
 
-    function testNotImplementedExtendedExceptoin()
+    public function testNotImplementedExtendedExceptoin()
     {
         self::expectException(\BadMethodCallException::class);
         $node = new TestBaseNode();
@@ -21,4 +21,8 @@ class BaseNodeTest extends BaseTest
     }
 }
 
-class TestBaseNode extends BaseNode {}
+// phpcs:disable
+class TestBaseNode extends BaseNode
+{
+}
+// phpcs:enable

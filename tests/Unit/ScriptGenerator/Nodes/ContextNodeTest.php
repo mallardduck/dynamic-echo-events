@@ -7,34 +7,36 @@ use MallardDuck\DynamicEcho\Tests\BaseTest;
 
 class ContextNodeTest extends BaseTest
 {
-    function testContextNodeNotExtendedException()
+    public function testContextNodeNotExtendedException()
     {
         self::expectException(\BadMethodCallException::class);
         $node = new ContextNode();
         json_encode($node);
     }
 
-    function testContextNodeNotExtendedExceptionMessage()
+    public function testContextNodeNotExtendedExceptionMessage()
     {
         $node = new ContextNode();
         try {
             json_encode($node);
         } catch (\Exception $e) {
+            // phpcs:disable
             self::assertEquals(
                 "Method [jsonSerialize] must be implemented by concrete class [MallardDuck\DynamicEcho\ScriptGenerator\Nodes\ContextNode]",
                 $e->getMessage()
             );
+            // phpcs:enable
         }
     }
 
-    function testExtendingContextNodeException()
+    public function testExtendingContextNodeException()
     {
         self::expectException(\BadMethodCallException::class);
         $node = new TestContextNode();
         json_encode($node);
     }
 
-    function testExtendingContextNodeExceptionMessage()
+    public function testExtendingContextNodeExceptionMessage()
     {
         $node = new TestContextNode();
         try {
@@ -48,4 +50,8 @@ class ContextNodeTest extends BaseTest
     }
 }
 
-class TestContextNode extends ContextNode {}
+// phpcs:disable
+class TestContextNode extends ContextNode
+{
+}
+// phpcs:enable

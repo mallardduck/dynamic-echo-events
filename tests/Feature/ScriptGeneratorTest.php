@@ -19,7 +19,7 @@ class ScriptGeneratorTest extends \MallardDuck\DynamicEcho\Tests\BaseTest
     public function testContextPush()
     {
         $scriptGenerator = $this->scriptGenerator->pushContextNode(
-            ScriptNodeBuilder::getChannelContextNode('test-channel', ["test"=>'data'])
+            ScriptNodeBuilder::getChannelContextNode('test-channel', ["test" => 'data'])
         );
         self::assertInstanceOf(ScriptGenerator::class, $scriptGenerator);
         self::assertEquals(
