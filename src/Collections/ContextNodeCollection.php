@@ -41,10 +41,14 @@ class ContextNodeCollection extends Collection
      */
     public function toJson($options = 0)
     {
-        $res = $this->mapWithKeys(static function ($val) {
-            return [
-                $val->channelJsVarKey => $val->channelContext
-            ];
+
+        $res = $this->mapWithKeys(static function ($val, $key) {
+            if (isset($val->channelJsVarKey)) {
+                return [
+                    $val->channelJsVarKey => $val->channelContext
+                ];
+            }
+            return [$key => $val];
         });
 
         $contextClass = new \stdClass();

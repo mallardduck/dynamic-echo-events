@@ -15,21 +15,6 @@ class GeneratorNodesTest extends BaseTest
         parent::setUp();
     }
 
-    public function testRootContextNodeToString()
-    {
-        $testNode = $this->scriptNodeBuilder::getRootContextNode(['message' => "Hello World!"]);
-        self::assertEquals('[{"message":"Hello World!"}]', (string) $testNode);
-
-        $testNode = $this->scriptNodeBuilder::getRootContextNode(['message' => "Test World!"]);
-        self::assertMatchesRegularExpression('/[{.*}]/', (string) $testNode);
-    }
-
-    public function testEmptyRootContextNodeToString()
-    {
-        $testNode = $this->scriptNodeBuilder::getRootContextNode();
-        self::assertEquals('[]', (string) $testNode);
-    }
-
     public function testRootEchoNodeToString()
     {
         $testNode = $this->scriptNodeBuilder::getRootEchoNode();

@@ -5,7 +5,6 @@ namespace MallardDuck\DynamicEcho\Tests\Unit\ScriptGenerator;
 use MallardDuck\DynamicEcho\ScriptGenerator\Nodes\ChannelContextNode;
 use MallardDuck\DynamicEcho\ScriptGenerator\Nodes\ListenNode;
 use MallardDuck\DynamicEcho\ScriptGenerator\Nodes\PrivateChannelNode;
-use MallardDuck\DynamicEcho\ScriptGenerator\Nodes\RootContextNode;
 use MallardDuck\DynamicEcho\ScriptGenerator\Nodes\RootEchoNode;
 use MallardDuck\DynamicEcho\ScriptGenerator\ScriptNodeBuilder;
 use MallardDuck\DynamicEcho\Tests\BaseTest;
@@ -23,14 +22,6 @@ class ScriptNodeBuilderTest extends BaseTest
     public function testInstanceIsCorrectClass()
     {
         self::assertInstanceOf(ScriptNodeBuilder::class, $this->scriptNodeBuilder);
-    }
-
-    public function testRootContextNodeInstance()
-    {
-        self::assertInstanceOf(
-            RootContextNode::class,
-            $this->scriptNodeBuilder::getRootContextNode(["message" => "Hello World, I love you."])
-        );
     }
 
     public function testRootEchoNodeInstance()
