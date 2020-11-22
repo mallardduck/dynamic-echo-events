@@ -31,8 +31,6 @@ class DynamicEchoService
 
     public function context(): string
     {
-        $debug = config('app.debug');
-
         $context = $this->compiledJSContext();
         $html = $this->buildHtmlStack($context, ucfirst(__FUNCTION__));
 
@@ -79,8 +77,6 @@ class DynamicEchoService
     // CONT: Then the dynamic ones would just be injected to the page for each user's request.
     public function scripts(): string
     {
-        $debug = config('app.debug');
-
         $scripts = $this->compiledJSScripts();
         $html = $this->buildHtmlStack($scripts, ucfirst(__FUNCTION__));
 

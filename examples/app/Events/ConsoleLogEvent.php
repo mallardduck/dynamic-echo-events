@@ -20,7 +20,6 @@ class ConsoleLogEvent implements ShouldBroadcastNow, ImplementsDynamicEcho, HasD
 {
     use Dispatchable;
     use InteractsWithSockets;
-    use SerializesModels;
     use BaseDynamicChannelFormula;
 
     public int $userId;

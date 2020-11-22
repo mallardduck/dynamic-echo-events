@@ -48,15 +48,15 @@ class PrintChannels extends Command
          */
         $channelMap = collect([[]]);
         if (!$this->option('full')) {
-            $channelMap = $dynamicEchoService->getDiscoveredChannels();
-            $channelMap = $channelMap->map(static function ($val, $key) {
+            $channelMap = $channelMap->merge($dynamicEchoService->getDiscoveredChannels());
+            $channelMap = $channelMap->map(static function ($val) {
                 return [$val];
             });
         } else {
             $headers[] = 'Channel Type';
             $headers[] = 'Auth Callback';
             $headers[] = 'Events';
-            $channelMap = $dynamicEchoService->getExtendedChannelInfo();
+            $channelMap = $channelMap->merge($dynamicEchoService->getExtendedChannelInfo());
 
             $channelMap = $channelMap->map(static function ($val, $key) {
                 $authReflection = new \ReflectionFunction($val['authCallback']);

@@ -24,7 +24,7 @@ use MallardDuck\DynamicEcho\Contracts\{
  */
 class ToastEvent implements ShouldBroadcastNow, ImplementsDynamicEcho, HasDynamicChannelFormula
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels, BaseDynamicChannelFormula;
+    use Dispatchable, InteractsWithSockets, BaseDynamicChannelFormula;
 
     public int $userId;
 
