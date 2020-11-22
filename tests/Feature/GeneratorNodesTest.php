@@ -17,10 +17,10 @@ class GeneratorNodesTest extends BaseTest
 
     public function testRootContextNodeToString()
     {
-        $testNode = $this->scriptNodeBuilder::getRootContextNode(['message'=>"Hello World!"]);
+        $testNode = $this->scriptNodeBuilder::getRootContextNode(['message' => "Hello World!"]);
         self::assertEquals('[{"message":"Hello World!"}]', (string) $testNode);
 
-        $testNode = $this->scriptNodeBuilder::getRootContextNode(['message'=>"Test World!"]);
+        $testNode = $this->scriptNodeBuilder::getRootContextNode(['message' => "Test World!"]);
         self::assertMatchesRegularExpression('/[{.*}]/', (string) $testNode);
     }
 
