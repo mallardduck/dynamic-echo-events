@@ -1,7 +1,9 @@
 # language: php
 build:
   environment:
-    php: "7.4.12"
+    php:
+      version: "7.4.12"
+      compile_options: '--with-pear --with-zip  --with-curl'
   nodes:
     analysis:
       tests:
