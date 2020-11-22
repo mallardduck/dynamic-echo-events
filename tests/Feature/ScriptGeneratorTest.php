@@ -28,11 +28,24 @@ class ScriptGeneratorTest extends \MallardDuck\DynamicEcho\Tests\BaseTest
         );
     }
 
+    public function testGetRootScript()
+    {
+        $scriptGenerator = $this->scriptGenerator;
+        self::assertInstanceOf(ScriptGenerator::class, $scriptGenerator);
+        self::assertEquals(
+            "Echo;\n",
+            $scriptGenerator->getRootScript()
+        );
+    }
+
     public function testScriptPush()
     {
         $scriptGenerator = $this->scriptGenerator->pushScriptNode(
-            ScriptNodeBuilder::getRootEchoNode()
+            ScriptNodeBuilder::getPrivateChannelNode("test-channel")
         );
-        self::assertInstanceOf(ScriptGenerator::class, $scriptGenerator);
+        self::assertEquals(
+            "Echo\n.private(test-channel);\n",
+            $scriptGenerator->getRootScript()
+        );
     }
 }
