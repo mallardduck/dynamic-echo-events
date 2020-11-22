@@ -1,11 +1,11 @@
 # Dynamic Echo Events
-[![Travis Build Status](https://travis-ci.org/mallardduck/dynamic-echo-events.svg?branch=main)](https://travis-ci.org/mallardduck/php-whois-client)
-[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/mallardduck/dynamic-echo-events.svg)](https://scrutinizer-ci.com/g/mallardduck/php-whois-client/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/mallardduck/dynamic-echo-events/badges/coverage.png?b=main)](https://scrutinizer-ci.com/g/mallardduck/php-whois-client/?branch=master)
+[![Travis Build Status](https://travis-ci.org/mallardduck/dynamic-echo-events.svg?branch=main)](https://travis-ci.org/mallardduck/php-dynamic-echo-events)
+[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/mallardduck/dynamic-echo-events.svg)](https://scrutinizer-ci.com/g/mallardduck/php-dynamic-echo-events/?branch=master)
+[![Code Coverage](https://scrutinizer-ci.com/g/mallardduck/dynamic-echo-events/badges/coverage.png?b=main)](https://scrutinizer-ci.com/g/mallardduck/php-dynamic-echo-events/?branch=master)
 [![Code Intelligence Status](https://scrutinizer-ci.com/g/mallardduck/dynamic-echo-events/badges/code-intelligence.svg?b=main)](https://scrutinizer-ci.com/code-intelligence)
-[![Latest Stable Version](https://poser.pugx.org/mallardduck/dynamic-echo-events/v/stable)](https://packagist.org/packages/mallardduck/whois-client)
-[![License](https://poser.pugx.org/mallardduck/dynamic-echo-events/license)](https://packagist.org/packages/mallardduck/whois-client)
-[![Coverage Status](https://coveralls.io/repos/github/mallardduck/dynamic-echo-events/badge.svg?branch=main)](https://coveralls.io/github/mallardduck/php-whois-client?branch=master)
+[![Latest Stable Version](https://poser.pugx.org/mallardduck/dynamic-echo-events/v/stable)](https://packagist.org/packages/mallardduck/dynamic-echo-events)
+[![License](https://poser.pugx.org/mallardduck/dynamic-echo-events/license)](https://packagist.org/packages/mallardduck/dynamic-echo-events)
+[![Coverage Status](https://coveralls.io/repos/github/mallardduck/dynamic-echo-events/badge.svg?branch=main)](https://coveralls.io/github/mallardduck/php-dynamic-echo-events?branch=master)
 
 
 A helper library to dynamically generate the javascript to register Echo event listeners.
