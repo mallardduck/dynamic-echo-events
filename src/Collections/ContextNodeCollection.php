@@ -7,7 +7,6 @@ use MallardDuck\DynamicEcho\ScriptGenerator\Nodes\ContextNode;
 
 class ContextNodeCollection extends Collection
 {
-
     /**
      * Push one or more items onto the end of the collection.
      *
@@ -31,7 +30,6 @@ class ContextNodeCollection extends Collection
      */
     public function toJson($options = 0)
     {
-
         $res = $this->mapWithKeys(static function ($val, $key) {
             if (isset($val->channelJsVarKey)) {
                 return [
