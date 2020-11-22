@@ -24,16 +24,6 @@ class ContextNodeCollection extends Collection
     }
 
     /**
-     * Get and remove the last item from the collection.
-     *
-     * @return ContextNode
-     */
-    public function pop()
-    {
-        return array_pop($this->items);
-    }
-
-    /**
      * Get the collection of items as JSON.
      *
      * @param  int  $options
