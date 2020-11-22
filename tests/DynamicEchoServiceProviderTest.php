@@ -6,7 +6,7 @@ use MallardDuck\DynamicEcho\ChannelManager;
 use MallardDuck\DynamicEcho\DynamicEchoService;
 use MallardDuck\DynamicEcho\DynamicEchoServiceProvider;
 use MallardDuck\DynamicEcho\Loader\EventContractLoader;
-use MallardDuck\DynamicEcho\ScriptGenerator;
+use MallardDuck\DynamicEcho\ScriptGenerator\ScriptGenerator;
 
 class DynamicEchoServiceProviderTest extends BaseTest
 {
@@ -31,7 +31,7 @@ class DynamicEchoServiceProviderTest extends BaseTest
     public function testScriptGeneratorType()
     {
         self::assertEquals(
-            get_class($this->app->get("MallardDuck\DynamicEcho\ScriptGenerator")),
+            get_class($this->app->get("MallardDuck\DynamicEcho\ScriptGenerator\ScriptGenerator")),
             ScriptGenerator::class
         );
     }

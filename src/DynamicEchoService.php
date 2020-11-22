@@ -7,7 +7,10 @@ use MallardDuck\DynamicEcho\Collections\{
     ChannelAwareEventCollection
 };
 use MallardDuck\DynamicEcho\Loader\LoadedEventDTO;
-use MallardDuck\DynamicEcho\ScriptGenerator\ScriptNodeBuilder;
+use MallardDuck\DynamicEcho\ScriptGenerator\{
+    ScriptGenerator,
+    ScriptNodeBuilder
+};
 
 class DynamicEchoService
 {

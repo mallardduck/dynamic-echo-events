@@ -1,12 +1,11 @@
 <?php
 
-namespace MallardDuck\DynamicEcho;
+namespace MallardDuck\DynamicEcho\ScriptGenerator;
 
 use Illuminate\Support\Collection;
-use MallardDuck\DynamicEcho\ScriptGenerator\ContextNodeCollection;
+use MallardDuck\DynamicEcho\Collections\ContextNodeCollection;
 use MallardDuck\DynamicEcho\ScriptGenerator\Nodes\ContextNode;
 use MallardDuck\DynamicEcho\ScriptGenerator\Nodes\ScriptNode;
-use MallardDuck\DynamicEcho\ScriptGenerator\ScriptNodeBuilder;
 
 /**
  * Class ScriptGenerator

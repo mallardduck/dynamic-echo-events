@@ -11,6 +11,7 @@ use MallardDuck\DynamicEcho\Commands\InstallExamplesCommand;
 use MallardDuck\DynamicEcho\Commands\PrintChannels;
 use MallardDuck\DynamicEcho\Composer\CacheResolver;
 use MallardDuck\DynamicEcho\Loader\EventContractLoader;
+use MallardDuck\DynamicEcho\ScriptGenerator\ScriptGenerator;
 
 class DynamicEchoServiceProvider extends ServiceProvider
 {

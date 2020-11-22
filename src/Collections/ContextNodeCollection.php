@@ -1,13 +1,38 @@
 <?php
 
-namespace MallardDuck\DynamicEcho\ScriptGenerator;
+namespace MallardDuck\DynamicEcho\Collections;
 
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use MallardDuck\DynamicEcho\ScriptGenerator\Nodes\ChannelContextNode;
+use MallardDuck\DynamicEcho\ScriptGenerator\Nodes\ContextNode;
 
 class ContextNodeCollection extends Collection
 {
+
+    /**
+     * Push one or more items onto the end of the collection.
+     *
+     * @param  ContextNode|ContextNode[]  $values [optional]
+     * @return $this
+     */
+    public function push(...$values)
+    {
+        foreach ($values as $value) {
+            $this->items[] = $value;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Get and remove the last item from the collection.
+     *
+     * @return ContextNode
+     */
+    public function pop()
+    {
+        return array_pop($this->items);
+    }
+
     /**
      * Get the collection of items as JSON.
      *
