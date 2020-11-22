@@ -14,11 +14,6 @@ use MallardDuck\DynamicEcho\Contracts\HasDynamicChannelFormula;
 class EventContractLoader
 {
     /**
-     * @var Collection
-     */
-    private Collection $appEvents;
-
-    /**
      * @var ChannelManager
      */
     private ChannelManager $channelManager;

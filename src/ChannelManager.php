@@ -10,12 +10,6 @@ use MallardDuck\DynamicEcho\Collections\{
 
 class ChannelManager
 {
-    // TODO: Write Channel Manager logic that will:
-    // - Track channels registered by events,
-    // - Track bindings needed for channel names,
-    // - Help render those bindings over to the view, and
-    // - work as a queue for the loader to push data too.
-
     /**
      * @var ChannelAwareEventCollection
      */
@@ -23,7 +17,6 @@ class ChannelManager
 
     public function __construct()
     {
-        // TODO: Make this collection unique to this use-case; i.e. require that it conform to a specific data shape.
         $this->channelCollection = new ChannelAwareEventCollection();
     }
 
@@ -78,11 +71,11 @@ class ChannelManager
             /**
              * @var LoadedEventDTO $val
              */
-            $events = $channelGroup->map(static function ($val) use ($first, &$channelInfo) {
+            $events = $channelGroup->map(static function ($val) use (&$first, &$channelInfo) {
                 if ($first) {
+                    $first = false;
                     $channelInfo['type'] = $val->getParameter('channelType');
                     $channelInfo['authCallback'] = $val->getParameter('channelAuthCallback');
-                    $first = false;
                 }
                 return $val->fullEventName;
             })->toArray();

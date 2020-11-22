@@ -2,6 +2,7 @@
 
 namespace MallardDuck\DynamicEcho\Composer;
 
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -92,7 +93,9 @@ class CacheResolver
 
     private function getVendorPath()
     {
-        return app()->basePath() . '/vendor';
+        /** @var Application $app */
+        $app = app();
+        return $app->basePath('vendor');
     }
 
     private function getClassMap(): ?array
