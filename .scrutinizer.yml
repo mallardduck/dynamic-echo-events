@@ -3,7 +3,7 @@ build:
   environment:
     php:
       version: "7.4"
-      compile_options: '--with-openssl --with-pear --with-zip  --with-curl'
+      compile_options: '--with-openssl --with-pear --enable-mbstring --with-zip  --with-curl'
   nodes:
     analysis:
       tests:
