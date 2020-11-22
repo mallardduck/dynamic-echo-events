@@ -1,11 +1,10 @@
 # language: php
 build:
+  environment:
+    php:
+      version: "7.4"
+      compile_options: '--with-openssl --with-pear --enable-mbstring --with-zip  --with-curl'
   nodes:
-    tests:
-      environment:
-        php:
-          version: 7.4
-          compile_options: '--with-zip'
     analysis:
       tests:
         override:
